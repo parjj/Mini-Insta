@@ -1,0 +1,101 @@
+1 kotlin
+fun setOnClickListener(l: (View) -> Unit)
+
+
+view.setOnClickListener(object : View.OnClickListener {
+    override fun onClick(v: View?) {
+        toast("Hello")
+    }
+})
+
+1
+view.setOnClickListener({ v -> toast("Hello") })
+view.setOnClickListener { v -> doSomething(v) }
+
+view.setOnClickListener { doSomething(it) }
+
+-------------------------------------------------------------
+ photoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+             if (photoIntent.resolveActivity(packageManager) != null) {
+
+                 try {
+                     fileStorage()
+                     photoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+                     startActivityForResult(photoIntent, REQUEST_IMAGE_CAPTURE)
+                 } catch (e: IOException) {
+                     e.printStackTrace()
+                 }
+             }
+         })
+
+
+    fun fileStorage(): Uri {
+        var photoFile: File
+
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+        storageDir.mkdirs()
+
+        // Create an image file name
+        photoFile = File.createTempFile("photo_",
+            ".jpg",
+            storageDir
+        )
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = photoFile.absolutePath
+        if (photoFile != null) {
+            val photoURI = FileProvider.getUriForFile(
+                this@MainActivity,
+                "com.example.android.fileprovider",
+                photoFile
+            )
+            this.photoUri = photoURI
+        }
+        return photoUri
+
+    }
+
+/*
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        // Check which request we're responding to
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+                // The user picked a contact.
+                // The Intent's data Uri identifies which contact was selected.
+
+                // Do something with the contact here (bigger example below)
+
+                if(data !=null && data.data !=null) {
+                    camera_photo.setVisibility(View.VISIBLE)
+                    val bmOptions = BitmapFactory.Options()
+                    val bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions)
+
+                    camera_photo.setImageBitmap(bitmap)
+
+                    val uri = data.data
+                    if (uri!=null){
+                    var s: String = uri.toString()
+                        Log.d("reference",s)
+                }
+
+                    val imageRef = storageRef.child(currentPhotoPath)
+
+                    Log.d("ref",imageRef.toString())
+
+                    //    imageRef.putFile(photoUri).addOnSuccessListener { var task:UploadTask.TaskSnapshot }
+                }
+            }
+        }
+    }
+
+    fun openFile(){
+        var intent= Intent()
+        intent.setType("image/*")
+        intent.setAction(Intent.ACTION_GET_CONTENT)
+        startActivityForResult(intent,REQUEST_IMAGE_CAPTURE_VIAINTENT)
+
+    }
+*/
