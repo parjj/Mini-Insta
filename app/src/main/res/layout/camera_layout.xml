@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="4"
+        android:background="@android:color/holo_green_dark"
+        tools:context=".MainActivity">
+
+    <FrameLayout
+            android:id="@+id/frame1"
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@android:color/black"
+            android:visibility="visible"
+    >
+
+        <ImageButton
+                android:id="@+id/takePhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/photo"
+                android:textAlignment="center"
+                android:layout_margin="1dp"
+                android:backgroundTint="#ffe5e5"
+
+        />
+
+        <TextView
+
+                android:id="@+id/phototext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Take Photo"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="80dp"
+                android:textAlignment="center"
+                android:textColor="#ff1a1a"
+        />
+
+    </FrameLayout>
+
+    <FrameLayout
+            android:id="@+id/frame2"
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+    >
+        <ImageButton
+                android:id="@+id/uploadPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/uploadphoto"
+                android:layout_weight="2"
+                android:backgroundTint="#ffe5f2"
+                android:layout_margin="1dp"
+        />
+        <TextView
+                android:id="@+id/uploadtext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Upload Photo"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="80dp"
+                android:textAlignment="center"
+                android:textColor="#ff1a1a"
+        />
+    </FrameLayout>
+
+    <LinearLayout
+            android:id="@+id/linear2"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+        <ImageView
+                android:id="@+id/cameraImg"
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+        />
+        <Button
+                android:id="@+id/uploadButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="upload"
+                android:layout_gravity="center"
+        />
+    </LinearLayout>
+    <ProgressBar
+            android:id="@+id/pbLoading"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:max="100"
+    />
+    <include
+            layout="@layout/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+    />
+</LinearLayout>

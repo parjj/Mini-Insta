@@ -1,3 +1,59 @@
+content://com.example.instagalleria.fileprovider/external_files/Android/data/com.example.instagalleria/files/Pictures/photo5502566780887569254.jpg
+
+ imageView.setImageURI(Uri.parse(imgUrl));
+
+ Intent { dat=content://com.android.providers.media.documents/document/image:46 flg=0x1 }
+
+ content://com.android.providers.media.documents/document/image%3A46   filepathuri
+
+
+  content://com.android.providers.media.documents/document/image%3A47
+content://com.android.providers.media.documents/document/image%3A46
+-----------------------------------------------------------
+ // upload to photo library
+    fun uploadToPhotoLibrary() {
+
+
+        var images_from_db = getAllDocumentsFromDB()
+
+        // Get the text fragment instance
+        val photoLibrary = PhotoLibrary()
+
+        // Get the support fragment manager instance
+        val manager = fragmentManager
+
+        // Begin the fragment transition using support fragment manager
+        val transaction = manager!!.beginTransaction()
+
+        // Replace the fragment on container
+        var bundle = Bundle()
+        bundle.putSerializable("upload_image", images_from_db)
+        photoLibrary.arguments = bundle
+        transaction.add(R.id.mainFrgament, photoLibrary, "photo_library")
+        transaction.addToBackStack("PL")
+
+        // Finishing the transition
+        transaction.commit()
+
+    }
+-------------------------------------------------------------------------------------------
+Note: Using replace fragment is preferred over using add, as it doesn’t store unnecessary
+fragments in the memory, and also reduce the UI rendering need. However if the current
+ fragment contains a webview, to open the next fragment, using add is better, this is in the
+ event when you pop that “next” fragment, your existing fragment with webview is retain and doesn’t need to be reloaded.
+---------------
+
+color theme -https://www.w3schools.com/colors/colors_picker.asp
+
+ android:backgroundTint="#ffffe5"
+            android:background="@drawable/relative_border"
+
+ android:backgroundTint="#e5ffe5"
+            android:background="@drawable/relative_border"
+
+https://www.zoftino.com/firebase-cloud-storage-upload-download-delete-files-android-example#upload-fragment
+
+-------------------------------------------------------------
 1 kotlin
 fun setOnClickListener(l: (View) -> Unit)
 
@@ -14,88 +70,221 @@ view.setOnClickListener { v -> doSomething(v) }
 
 view.setOnClickListener { doSomething(it) }
 
+No need to write
+
+val view = itemView.findViewById(R.id.date) as TextView
+view.text = forecast.date.toDateString()
+Just
+
+itemView.date.text = forecast.date.toDateString()
+
 -------------------------------------------------------------
- photoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-             if (photoIntent.resolveActivity(packageManager) != null) {
+/ Creating Method to get the selected image file Extension from File Path URI.
+public String GetFileExtension(Uri uri) {
 
-                 try {
-                     fileStorage()
-                     photoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
-                     startActivityForResult(photoIntent, REQUEST_IMAGE_CAPTURE)
-                 } catch (e: IOException) {
-                     e.printStackTrace()
-                 }
-             }
-         })
+    ContentResolver contentResolver = getContentResolver();
+
+    MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+
+    // Returning the file Extension.
+    return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri)) ;
+
+--------------------------------------------------------------------------------
+check these out
+
+https://www.simplifiedcoding.net/firebase-storage-example/
+
+check this out
+https://codeexa.com/android-create-and-delete-in-firebase-realtime-database-with-storage/
+
+https://www.simplifiedcoding.net/firebase-storage-example/
+
+https://www.raywenderlich.com/1364094-android-fragments-tutorial-an-introduction-with-kotlin
+
+https://www.raywenderlich.com/1560485-android-recyclerview-tutorial-with-kotlin
 
 
-    fun fileStorage(): Uri {
-        var photoFile: File
+---------------------------------------------------------------------------------
+        var cr = context!!.contentResolver
+                        val bitmap = MediaStore.Images.Media.getBitmap(cr, filePathUri)
+------------------------------------------------------------------------------------------------
 
-        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+             // Get the text fragment instance
+                        val textFragment = TextFragment()
 
-        storageDir.mkdirs()
+                        // Get the support fragment manager instance
+                        val manager = supportFragmentManager
 
-        // Create an image file name
-        photoFile = File.createTempFile("photo_",
-            ".jpg",
-            storageDir
-        )
+                        // Begin the fragment transition using support fragment manager
+                        val transaction = manager.beginTransaction()
 
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = photoFile.absolutePath
-        if (photoFile != null) {
-            val photoURI = FileProvider.getUriForFile(
-                this@MainActivity,
-                "com.example.android.fileprovider",
-                photoFile
-            )
-            this.photoUri = photoURI
+                        // Replace the fragment on container
+                        transaction.replace(R.id.fragment_container,textFragment)
+                        transaction.addToBackStack(null)
+
+                        // Finishing the transition
+                        transaction.commit()
+ ------------------------------------------------------------------------------------------------
+   media contents   pick audio from gallery                   //Use MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+
+                        Pick Video file from Gallery:
+                        //Use MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                        Pick Image from gallery:
+                        //Use  MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                        Pick Media Files or images:
+                         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        intent.setType("image/* video/*");
+
+                        https://stackoverflow.com/questions/3401579/get-filename-and-path-from-uri-from-mediastore
+
+------------------------------------------------------------------------------------------------ ------------------------------------------------------------------------------------------------
+In order to access your Firebase Storage files, you'll need to first get a reference to the FirebaseStorage object, and then create a
+StorageReference to your project's URL and the file that you want to download. You can find your project's URL at the top of the Files section of Storage in the Firebase Console.
+StorageReference storageRef = storage.getReferenceFromUrl("gs://tutsplus-firebase.appspot.com").child("android.jpg");
+try {
+    final File localFile = File.createTempFile("images", "jpg");
+    storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+        @Override
+        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+            mImageView.setImageBitmap(bitmap);
+
         }
-        return photoUri
+    }).addOnFailureListener(new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception exception) {
+        }
+    });
+} catch (IOException e ) {}
+Next, you can create a File object and attempt to load the file you want by calling getFile on your StorageReference with the new File object
+passed as a parameter. Since this operation happens asynchronously,
+you can add an OnSuccessListener and OnFailureListener to your call in order to handle either contingency.
+------------------------------------------------------------------------------------------------------------------------
+public void updateProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+    @SuppressWarnings("VisibleForTests") long fileSize =
+		taskSnapshot.getTotalByteCount();
+
+    @SuppressWarnings("VisibleForTests")
+		long uploadBytes = taskSnapshot.getBytesTransferred();
+
+    long progress = (100 * uploadBytes) / fileSize;
+
+    ProgressBar progressBar = (ProgressBar) findViewById(R.id.pbar);
+    progressBar.setProgress((int) progress);
+}
+
+@Override
+public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+    updateProgress(taskSnapshot);
+}
+
+---------------------------------------------------------------------------------------------------------------------------------
+For storing the url perfectly from your Firebase storage to your Firebase Database, you can use a code like this:
+
+This code also contains the part where you can upload the image to your firebase storage, so I think this would make you relate to your code and may help you, even more.
+
+private void uploadFile(Bitmap bitmap) {
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        final StorageReference storageRef = storage.getReference();
+
+        final StorageReference ImagesRef = storageRef.child("images/"+mAu.getCurrentUser().getUid()+".jpg");
+
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        byte[] data = baos.toByteArray();
+        final UploadTask uploadTask = ImagesRef.putBytes(data);
+
+
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.i("whatTheFuck:",exception.toString());
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+
+                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.i("problem", task.getException().toString());
+                        }
+
+                        return ImagesRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child(mAu.getCurrentUser().getUid());
+
+                            Log.i("seeThisUri", downloadUri.toString());// This is the one you should store
+
+                            ref.child("imageURL").setValue(downloadUri.toString());
+
+
+                        } else {
+                            Log.i("wentWrong","downloadUri failure");
+                        }
+                    }
+                });
+             }
+        });
 
     }
+    ---------------------------------------------------------------------------------------------------------------------------------
+Learning
+
+///*
+//        ### source : developer.android.com ###
+//
+//        VH onCreateViewHolder (ViewGroup parent, int viewType)
+//            Called when RecyclerView needs a new RecyclerView.ViewHolder of the given type to
+//            represent an item.
+//
+//            This new ViewHolder should be constructed with a new View that can
+//            represent the items of the given type. You can either create a new View manually
+//            or inflate it from an XML layout file.
+//
+//            The new ViewHolder will be used to display items of the adapter using
+//            onBindViewHolder(ViewHolder, int, List). Since it will be re-used to display different
+//            items in the data set, it is a good idea to cache references to sub views of the View
+//            to avoid unnecessary findViewById(int) calls.
+//
+//        Parameters
+//            parent ViewGroup: The ViewGroup into which the new View will be added after it
+//                              is bound to an adapter position.
+//            viewType int: The view type of the new View.
+//
+//        Returns
+//            VH : A new ViewHolder that holds a View of the given view type.
+//    */
 
 /*
+        ### source : developer.android.com ###
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        // Check which request we're responding to
-        if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            // Make sure the request was successful
-            if (resultCode == Activity.RESULT_OK) {
-                // The user picked a contact.
-                // The Intent's data Uri identifies which contact was selected.
+        void onBindViewHolder (VH holder, int position, List<Object> payloads)
+            Called by RecyclerView to display the data at the specified position. This method should
+            update the contents of the itemView to reflect the item at the given position.
 
-                // Do something with the contact here (bigger example below)
+        Parameters
+            holder VH: The ViewHolder which should be updated to represent the contents of the
+                       item at the given position in the data set.
+            position int: The position of the item within the adapter's data set.
+            payloads List: A non-null list of merged payloads. Can be empty list if requires
+                           full update.
+    */
 
-                if(data !=null && data.data !=null) {
-                    camera_photo.setVisibility(View.VISIBLE)
-                    val bmOptions = BitmapFactory.Options()
-                    val bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions)
-
-                    camera_photo.setImageBitmap(bitmap)
-
-                    val uri = data.data
-                    if (uri!=null){
-                    var s: String = uri.toString()
-                        Log.d("reference",s)
-                }
-
-                    val imageRef = storageRef.child(currentPhotoPath)
-
-                    Log.d("ref",imageRef.toString())
-
-                    //    imageRef.putFile(photoUri).addOnSuccessListener { var task:UploadTask.TaskSnapshot }
-                }
-            }
-        }
-    }
-
-    fun openFile(){
-        var intent= Intent()
-        intent.setType("image/*")
-        intent.setAction(Intent.ACTION_GET_CONTENT)
-        startActivityForResult(intent,REQUEST_IMAGE_CAPTURE_VIAINTENT)
-
-    }
-*/
