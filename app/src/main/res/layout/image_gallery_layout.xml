@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recyclerView"
-        android:scrollbars="vertical"
-
+        android:orientation="vertical"
+        android:background="#ff8080"
+        android:clickable="true"
 >
 
-</android.support.v7.widget.RecyclerView>
+    <include layout="@layout/toolbar_top"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:id="@+id/tp_gallery"/>
+
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:scrollbars="vertical"
+            android:layout_below="@+id/tp_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+    <include
+            layout="@layout/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_alignBottom="@+id/recyclerView"
+    />
+</RelativeLayout>

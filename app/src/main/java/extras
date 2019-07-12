@@ -288,3 +288,65 @@ Learning
                            full update.
     */
 
+---------------------------------------------------------------------------------------------------------------------------------
+
+https://www.letsbuildthatapp.com/course_video?id=1322
+
+https://codingwithmitch.com/blog/android-recyclerview-onclicklistener/
+
+https://www.tutlane.com/tutorial/android/android-progressbar-with-examples
+
+https://firebaseopensource.com/projects/firebase/friendlyeats-android/
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+ <LinearLayout
+            android:id="@+id/linear2"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+        <ImageView
+                android:id="@+id/cameraImg"
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+        />
+        <Button
+                android:id="@+id/uploadButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="upload"
+                android:layout_gravity="center"
+        />
+        <!--<include-->
+                <!--layout="@layout/toolbar_layout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="bottom"-->
+                <!--android:id="@+id/camera_toolbar"-->
+        <!--/>-->
+    </LinearLayout>
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+    yocahuyov@freemaillink.com
+
+    test1@cloud-mail.net
+
+https://www.trash-mail.com/new-address/
+
+
+    users and pwd
+
+The given password is invalid. [ Password should be at least 6 characters
+
+    test001@opentrash.com 001001001
+    test002@opentrash.com 002
+    test003@opentrash.com 003
+    test004@opentrash.com 004
+    test005@opentrash.com 005
+
+ getFragmentManager().popBackStack(ProductFragment.PRODUCT_FRAGMENT, FragmentManager.POP_BACK_STACK_INCLUSIVE);

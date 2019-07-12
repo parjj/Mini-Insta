@@ -74,39 +74,16 @@
         />
     </FrameLayout>
 
-    <LinearLayout
-            android:id="@+id/linear2"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
-        <ImageView
-                android:id="@+id/cameraImg"
-                android:layout_margin="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-        />
-        <Button
-                android:id="@+id/uploadButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="upload"
-                android:layout_gravity="center"
-        />
-    </LinearLayout>
-    <ProgressBar
+    <include layout="@layout/progress_bar"
             android:id="@+id/pbLoading"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:max="100"
     />
     <include
             layout="@layout/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:id="@+id/camera_toolbar"
     />
 </LinearLayout>

@@ -10,6 +10,9 @@ class Constants {
 
 
     companion object {
+
+        public val TAG: String = "Photo Application"
+
         val STORAGE_PATH_UPLOADS = "images/"
         val DATABASE_PATH_UPLOADS = "imagesDB"
 

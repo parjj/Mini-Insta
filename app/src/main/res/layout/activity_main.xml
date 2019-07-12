@@ -3,18 +3,29 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/ll1"
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context=".MainActivity">
 
+
+
     <fragment
-            class="com.example.instagalleria.fragments.ImageGalleryViewFragment"
+            class="com.example.instagalleria.fragments.LoginPageFragment"
             android:id="@+id/mainFrgament"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:tag="fragment_tag"
     />
+
+    <!--<include-->
+            <!--layout="@layout/toolbar_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:id="@+id/camera_toolbar"-->
+    <!--/>-->
 
 
 </FrameLayout>

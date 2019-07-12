@@ -5,13 +5,15 @@
               android:layout_height="match_parent"
               android:gravity="center_vertical"
               android:layout_margin="10dp"
+              android:background="#ffcccc"
 >
 
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="USERNAME"
+            android:text="Account Login"
             android:padding="10dp"
+            style="@style/BoldLabel"
     />
 
     <EditText
@@ -19,31 +21,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:hint="name"
+            android:hint="user name"
+            android:layout_margin="10dp"
+            android:background="@drawable/edit_text_style"
 
-    />
-
-    <TextView
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="PASSWORD"
-            android:padding="10dp"
     />
 
     <EditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="pwd"
+            android:hint="password"
+            android:layout_margin="10dp"
+            android:inputType="textPassword"
+            android:background="@drawable/edit_text_style"
             android:padding="10dp"/>
-
-    <Button
-            android:id="@+id/loginB"
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Login"
-    />
+            android:orientation="horizontal"
+            android:gravity="center">
 
+        <Button
+                android:id="@+id/loginB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:layout_margin="10dp"
+                android:background="@drawable/edit_text_style"
+        />
+
+        <Button
+                android:id="@+id/newUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New User"
+                android:layout_margin="10dp"
+                android:background="@drawable/edit_text_style"
+        />
+    </LinearLayout>
 
 </LinearLayout>
