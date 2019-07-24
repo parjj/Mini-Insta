@@ -10,91 +10,51 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
+import com.example.instagalleria.MainActivity
 import com.example.instagalleria.R
 import com.example.instagalleria.adapter.ImageViewAdapter
 import com.example.instagalleria.model.Constants
 import com.example.instagalleria.model.Constants.Companion.TAG
 import com.example.instagalleria.model.UploadImage
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+
 
 class ImageGalleryViewFragment : Fragment() {
 
+
     private lateinit var recyclerView: RecyclerView
 
-    private lateinit var toolbar: Toolbar
-    private lateinit var toolbar_left: ImageButton
-    private lateinit var toolbar_right: ImageButton
+    lateinit var userName: String
 
     var uploadList = ArrayList<UploadImage>()
-    lateinit var adapter :ImageViewAdapter
+    lateinit var adapter: ImageViewAdapter
 
-
-    private lateinit var toolbar_top: Toolbar
-    private lateinit var toolbar_back: TextView
-    private lateinit var toolbar_title: EditText
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         var view = inflater.inflate(R.layout.image_gallery_layout, container, false)
+        getAllDocumentsFromDB()    // fetching data(all images) from the firebase DB
+
+        var bundle = arguments
+
+        userName = bundle!!.getString("profile_user")
 
         // recycler view functions
         recyclerView = view.findViewById(R.id.recyclerView)
 
-        var gridLayoutManager = GridLayoutManager(this.context, 5)
+        var gridLayoutManager = GridLayoutManager(this.context, 3)
         recyclerView.layoutManager = gridLayoutManager
 
-        getAllDocumentsFromDB()    // fetching data(all images) from the firebase DB
+        adapter = ImageViewAdapter(context!!, uploadList)
+        recyclerView.adapter = adapter
 
-        adapter = ImageViewAdapter(context!!,uploadList)
-        recyclerView.adapter= adapter
-
-
-        //toolbar activity
-        toolbar = view.findViewById(R.id.toolbar_layout)
-        toolbar_left = view.findViewById(R.id.leftSide)
-        toolbar_right = view.findViewById(R.id.rightSide)
-
-        toolbar_left.setBackgroundResource(R.drawable.icons8_home_26)
-        toolbar_left.scaleX = 0.1f
-        toolbar_left.scaleX = 0.1f
-        toolbar_right.setBackgroundResource(R.drawable.icons8_camera_26)
-        toolbar_right.scaleX = 0.1f
-        toolbar_right.scaleX = 0.1f
-
-
-        //toolbar top
-        toolbar_top = view.findViewById(R.id.toolbar_top)
-        toolbar_back = view.findViewById(R.id.backtext)
-        toolbar_title = view.findViewById(R.id.title)
-        toolbar_back.visibility=View.GONE
-        toolbar_title.setText("Insta Gallery")
-        toolbar_title.gravity= Gravity.CENTER_VERTICAL
-
-
-        toolbarListeners()
 
         return view
     }
 
-    fun toolbarListeners(){
-
-        toolbar_right.setOnClickListener(View.OnClickListener { l->
-
-            var fragmentTransaction = fragmentManager!!.beginTransaction()   // to camera fragment
-            var cameraFragment = CameraFragment()
-
-            fragmentTransaction.add(R.id.fragment_container,cameraFragment,"camera_fragment")
-            fragmentTransaction.addToBackStack("CF")
-
-            fragmentTransaction.commit()
-
-
-        })
-    }
 
     // retrieve from database collection cloud storage
     fun getAllDocumentsFromDB() {
@@ -104,6 +64,8 @@ class ImageGalleryViewFragment : Fragment() {
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
+
+                    Log.d(TAG, "document names" + "" + "" + document.toString())
 
                     var nameString = document.data
 
@@ -130,15 +92,14 @@ class ImageGalleryViewFragment : Fragment() {
 
     }
 
-
-    override fun onStart() {
-        super.onStart()
-        if(adapter !=null){
+    fun refresh() {
+        if (adapter != null) {
             adapter.notifyDataSetChanged()
         }
     }
-
 }
 
 
 //next to do is live listner for the db
+// toolbar set up common one
+//

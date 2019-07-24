@@ -4,6 +4,9 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.firebase.firestore.DocumentReference
+
+
 
 
 class Constants {
@@ -22,5 +25,6 @@ class Constants {
         val storageRef: StorageReference = storage.getReference("images/")
         val db_storage = FirebaseFirestore.getInstance()
         val db_storageRef: CollectionReference = db_storage.collection("imagesDB")
+
     }
 }

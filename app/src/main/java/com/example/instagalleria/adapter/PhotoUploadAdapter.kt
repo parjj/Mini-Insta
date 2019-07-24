@@ -9,17 +9,10 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import com.example.instagalleria.R
 
-class PhotoLibraryAdapter() : BaseAdapter() {
+class PhotoUploadAdapter() : BaseAdapter() {
 
-   // var image_list = ArrayList<UploadImage>()
     var image_list = ArrayList<Uri>()
     lateinit var contex: Context
-
-//    constructor(context: Context,image_list:ArrayList<UploadImage>) : this() {
-//
-//        this.contex=contex
-//        this.image_list=image_list
-//    }
 
     constructor(context: Context,image_list:ArrayList<Uri>) : this() {
 

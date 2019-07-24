@@ -298,6 +298,8 @@ https://www.tutlane.com/tutorial/android/android-progressbar-with-examples
 
 https://firebaseopensource.com/projects/firebase/friendlyeats-android/
 
+https://time2hack.com/2018/07/advanced-user-actions-for-firebase-login/
+
 ---------------------------------------------------------------------------------------------------------------------------------
 
  <LinearLayout
@@ -350,3 +352,108 @@ The given password is invalid. [ Password should be at least 6 characters
     test005@opentrash.com 005
 
  getFragmentManager().popBackStack(ProductFragment.PRODUCT_FRAGMENT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+ ---------------------------------------------------------------------------------------------------------------------------------
+ // using onstart method gave a problem when uploading the photo  on selection it jumps to the onstart method of all fragments starting from loginpage
+     // check to see if the user is already signed in
+ //    override fun onStart() {
+ //        super.onStart()
+ //        // Check if user is signed in (non-null) and update UI accordingly.
+ //
+ //        if (auth.currentUser != null) {
+ //            var currentUser: String? = auth.currentUser!!.email
+ //
+ //            val user = auth.currentUser
+ //            user?.let {
+ //                // Name, email address, and profile photo Url
+ //                val name = user.displayName
+ //                // val email = user.email
+ //
+ //                if (name != null) {
+ //                    transactionCall(name)
+ //                }
+ //            }
+ //            //updateUI(currentUser)
+ //        }
+ //
+ //
+ //
+ //    }
+
+
+
+    fun loginUserCall(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(OnCompleteListener { task ->
+
+            if (task.isSuccessful) {
+                Log.d(TAG, "signInWithEmail:success")
+            } else {
+                // If sign in fails, display a message to the user.
+                Log.w(TAG, "signInWithEmail:failure", task.exception)
+            }
+
+        })
+
+
+    }
+
+ ---------------------------------------------------------------------------------------------------------------------------------
+ if (auth.currentUser != null) {
+
+            val user = auth.currentUser
+
+
+                // Name, email address, and profile photo Url
+                val name = user!!.displayName
+                 val email = user.email
+                Log.d(TAG,"direct username" +name)
+                if (name != null) {
+                    transactionCall(name)
+                }
+
+
+
+        }
+
+        //        val bmOptions = BitmapFactory.Options()
+        //        val photo_bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions)
+
+                         // Toast.makeText(context, "Uploaded to firebase storage ", Toast.LENGTH_SHORT).show()
+
+        //                    var handler = Handler()
+        //                    handler.postDelayed(Runnable {
+        //                        progressBar.setProgress(0)
+        //
+        //                    }, 500)
+
+
+ ---------------------------------------------------------------------------------------------------------------------------------
+list view scrolling
+
+https://dzone.com/articles/introduction-to-xamarinforms-for-android-developer-4
+
+
+EditText etUserName = (EditText) findViewById(R.id.txtUsername);
+String strUserName = etUserName.getText().toString();
+
+ if(TextUtils.isEmpty(strUserName)) {
+    etUserName.setError("Your message");
+    return;
+ }
+
+ ---------------------------------------------------------------------------------------------------------------------------------
+
+
+    <include layout="@layout/toolbar_top"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:id="@+id/main_toolbar"
+             android:visibility="gone"/>
+ ---------------------------------------------------------------------------------------------------------------------------------
+
+ ---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+ ---------------------------------------------------------------------------------------------------------------------------------

@@ -15,7 +15,6 @@
             android:layout_marginRight="4dp"
             android:layout_marginBottom="4dp"
             android:hint="user email"
-            android:importantForAutofill="no"
             android:inputType="textEmailAddress"
     />
 
@@ -29,10 +28,20 @@
             android:layout_marginBottom="16dp"
             android:fontFamily="sans-serif"
             android:hint="paswword"
-            android:importantForAutofill="no"
             android:inputType="textPassword"
     />
 
+    <EditText
+            android:id="@+id/profileName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif"
+            android:hint="profile name"
+    />
     <Button
             android:id="@+id/btn_register"
             android:layout_width="match_parent"

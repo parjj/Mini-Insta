@@ -12,22 +12,19 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.example.instagalleria.R
 import com.example.instagalleria.model.UploadImage
-import android.widget.Toast
-import com.example.instagalleria.fragments.CameraFragment
-import com.example.instagalleria.fragments.ImageGalleryViewFragment
 import android.support.v4.app.FragmentActivity
-import android.widget.LinearLayout
-import com.example.instagalleria.fragments.PhotoDetail
+import com.example.instagalleria.fragments.PhotoDetailFragment
 import com.example.instagalleria.model.Constants.Companion.TAG
 
 
 class ImageViewAdapter(var context: Context, var images_urls: ArrayList<UploadImage>) :
     RecyclerView.Adapter<ImageViewAdapter.ImageViewHolder>() {
 
+    val IMAGE_VIEW_ADAPTER="imageViewAdapter"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
 
-        var view = LayoutInflater.from(parent.context).inflate(R.layout.listof_photos, parent, false)
+        var view = LayoutInflater.from(parent.context).inflate(R.layout.photo_list_library, parent, false)
 
         val viewHolder = ImageViewHolder(view) // pass the view to View Holder
         return viewHolder
@@ -41,32 +38,23 @@ class ImageViewAdapter(var context: Context, var images_urls: ArrayList<UploadIm
 
         var uri = images_urls.get(pos).uriString
 
-        //imageHolder.imageView.setImageURI(uri)
-
-        // imageHolder.imageView.setBackgroundResource(R.color.background_material_dark)
-
         Glide.with(context).load(uri).into(imageHolder.imageView);
 
         imageHolder.layout
             .setOnClickListener(View.OnClickListener { v ->
 
-                var ipos=images_urls.get(pos)
-                Log.d(TAG, "You clicked this image which has the url='$ipos' ")
-
                 var fragmentTransaction = (context as FragmentActivity).supportFragmentManager.beginTransaction();
-                var photoDetail = PhotoDetail()
+                var photoDetailFragment = PhotoDetailFragment()
 
                 var bundle = Bundle()
-
                 var uri_value=images_urls.get(pos).uriString
+                var fileName=images_urls.get(pos).filename
+                bundle.putString("uri_image_value",uri_value)
+                bundle.putString("uri_image_fileName",fileName)
 
-
-                bundle.putString("uri_string",uri_value)
-
-                photoDetail.arguments = bundle
-                fragmentTransaction.add(R.id.mainFrgament, photoDetail, "photo_detail")
-
-                fragmentTransaction.addToBackStack("PD1")
+                photoDetailFragment.arguments = bundle
+                fragmentTransaction.add(R.id.fragment_container, photoDetailFragment, "photo_detail")
+                fragmentTransaction.addToBackStack(IMAGE_VIEW_ADAPTER)
                 fragmentTransaction.commit()
 
             })
@@ -76,8 +64,8 @@ class ImageViewAdapter(var context: Context, var images_urls: ArrayList<UploadIm
 
     class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val imageView = itemView.findViewById<ImageView>(R.id.photo_images)
-        val layout = itemView.findViewById<ConstraintLayout>(R.id.parent_layout)
+        val imageView = itemView.findViewById<ImageView>(R.id.photo_images_list)
+        val layout = itemView.findViewById<ConstraintLayout>(R.id.parent_layout_library)
 
 
     }
