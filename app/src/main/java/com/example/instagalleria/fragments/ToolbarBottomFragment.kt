@@ -14,6 +14,8 @@ import java.lang.Exception
 
 class ToolbarBottomFragment() :Fragment(){
 
+    var CAMERA_FRAGMENT ="camera_fragment"
+    var TOOLBAR_BOTTOM_FRAGMENT ="toolbar_bottom_fragment"
 
 
     public lateinit var toolbar_bottom: Toolbar
@@ -45,8 +47,8 @@ class ToolbarBottomFragment() :Fragment(){
             var fragmentTransaction = activity!!.supportFragmentManager.beginTransaction()
             var cameraFragment = CameraFragment()
 
-            fragmentTransaction.add(R.id.fragment_container, cameraFragment, "camera_fragment")
-            fragmentTransaction.addToBackStack("cl")
+            fragmentTransaction.add(R.id.fragment_container, cameraFragment,CAMERA_FRAGMENT )
+            fragmentTransaction.addToBackStack(TOOLBAR_BOTTOM_FRAGMENT)
 
             fragmentTransaction.commit()
         }catch(exception:Exception){

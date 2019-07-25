@@ -72,6 +72,19 @@ class ImageGalleryViewFragment : Fragment() {
                     var img_name = nameString.get("NAME")
                     var img_uri = nameString.get("URI")
 
+                    if (nameString.containsKey("LIKES")) {
+
+                        var l= nameString.get("LIKES")
+                        if(l is String){
+
+                          var num = l.toLong()
+                            if(num <=0){
+
+                                Log.d(TAG," count value " + num )
+                            }
+                        }
+
+                    }
 
                     val uploadImage = UploadImage(img_name as String, img_uri as String)
                     uploadList.add(uploadImage)

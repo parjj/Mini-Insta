@@ -450,7 +450,31 @@ String strUserName = etUserName.getText().toString();
              android:id="@+id/main_toolbar"
              android:visibility="gone"/>
  ---------------------------------------------------------------------------------------------------------------------------------
+//issue on multiple select as images gets loaded twice
 
+
+fun getImageUri(inContext: Context, inImage: Bitmap): Uri {
+    var bytes = ByteArrayOutputStream()
+    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+    var path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+    var uri = Uri.parse(path);
+    return uri
+}
+
+//    override fun onStop() {
+//        super.onStop()
+//        storageRef.child("uploads/").delete()
+//    }
+
+
+//The reason why we have saved image paths in the database is because firebase storage do not provide any api to list files or folders.
+// The only way to get the storage files is by keeping an index of files in our database.
+private Fragment getCurrentFragment(){
+    FragmentManager fragmentManager = getSupportFragmentManager();
+    String fragmentTag = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName();
+    Fragment currentFragment = fragmentManager.findFragmentByTag(fragmentTag);
+    return currentFragment;
+}
  ---------------------------------------------------------------------------------------------------------------------------------
 
 

@@ -7,22 +7,6 @@
         android:background="@android:color/white"
         android:clickable="true"
 >
-
-    <!--<include layout="@layout/toolbar_top"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:id="@+id/tp_gallery"/>-->
-
-    <fragment android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              class="com.example.instagalleria.fragments.ToolbarTopFragment"
-              android:id="@+id/tooltop"
-              app:layout_constraintTop_toTopOf="parent"
-              app:layout_constraintBottom_toTopOf="@id/recyclerView"
-
-    />
-
-
     <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:scrollbars="vertical"
@@ -30,17 +14,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tooltop"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/toolbot"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
     />
-
-    <fragment android:layout_width="match_parent" android:layout_height="wrap_content"
-              class="com.example.instagalleria.fragments.ToolbarBottomFragment"
-              android:layout_below="@id/recyclerView"
-              app:layout_constraintTop_toBottomOf="@id/recyclerView"
-              app:layout_constraintBottom_toBottomOf="parent"
-              android:id="@+id/toolbot"/>
-
 
 </android.support.constraint.ConstraintLayout>

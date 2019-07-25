@@ -15,6 +15,7 @@ import android.widget.*
 import com.example.instagalleria.R
 import com.example.instagalleria.adapter.PhotoUploadAdapter
 import com.example.instagalleria.model.Constants
+import com.example.instagalleria.model.Constants.Companion.TAG
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
@@ -34,10 +35,11 @@ class PhotoUploadFragment : Fragment() {
     lateinit var upload_button: Button
 
     private lateinit var camera_photo: ImageView
-   // private lateinit var progressBar: ProgressBar
+    // private lateinit var progressBar: ProgressBar
     private var photos_list: ArrayList<Uri>? = null
 
     private lateinit var uri_value: Uri
+    val IMAGE_GALLERY_FRAGMENT = "image_gallery"
 
     var imageGallery = ImageGalleryViewFragment()
     var loginPageFragment = LoginPageFragment()
@@ -47,14 +49,30 @@ class PhotoUploadFragment : Fragment() {
 
         var view = inflater.inflate(R.layout.photo_library, container, false)
 
-      //  progressBar = view.findViewById(R.id.progress_bar)
+        //  progressBar = view.findViewById(R.id.progress_bar)
 
         var bundle = arguments!!
         var str = bundle.getString("uri_string")
 
+        var fragments= fragmentManager!!.fragments
 
-        imageGallery = fragmentManager!!.fragments.get(1) as ImageGalleryViewFragment
-        loginPageFragment = fragmentManager!!.fragments.get(0) as LoginPageFragment
+        Log.d(TAG,fragments.toString())
+        Log.d(TAG,fragments.get(1).toString())
+        Log.d(TAG,fragments.get(2).toString())
+        Log.d(TAG,fragments.get(0).toString())
+        Log.d(TAG,fragments.get(3).toString())
+        Log.d(TAG,fragments.get(4).toString())
+
+         var v= fragmentManager!!.findFragmentByTag(IMAGE_GALLERY_FRAGMENT)
+
+         var f= fragmentManager!!.backStackEntryCount
+
+
+        Log.d(TAG, f.toString())
+        Log.d(TAG, v.toString())
+
+        imageGallery = fragmentManager!!.fragments.get(3) as ImageGalleryViewFragment
+       // loginPageFragment = fragmentManager!!.fragments.get(0) as LoginPageFragment
 
         gridView = view.findViewById(R.id.gridView_pl)
         upload_button = view.findViewById(R.id.uploadMultiple)
@@ -67,7 +85,7 @@ class PhotoUploadFragment : Fragment() {
 
                 var cr = this.context?.contentResolver
                 val imgBitmap = MediaStore.Images.Media.getBitmap(cr, uri_value)
-                camera_photo.visibility=View.VISIBLE
+                camera_photo.visibility = View.VISIBLE
                 camera_photo.setImageURI(uri_value)  // setting the image view
             }
 
@@ -92,7 +110,12 @@ class PhotoUploadFragment : Fragment() {
                 upload(uri_value)
             }
 
-            //fragmentManager!!.popBackStack(loginPageFragment.IMAGE_GALLERY_FRAGMENT,FragmentManager.POP_BACK_STACK_INCLUSIVE) // not working
+
+            var fms = fragmentManager!!.fragments
+            fragmentManager!!.popBackStack(
+               imageGallery.id,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            ) // not working
 
         })
 
@@ -103,8 +126,8 @@ class PhotoUploadFragment : Fragment() {
 
 
     //upload to firebase
-    public fun upload(filePathUri: Uri) {
-      //  progressBar.visibility = View.VISIBLE
+     fun upload(filePathUri: Uri) {
+        //  progressBar.visibility = View.VISIBLE
 
         if (filePathUri != null) {
 
@@ -139,7 +162,8 @@ class PhotoUploadFragment : Fragment() {
                     hashMap.put("USER", user)
                     hashMap.put("NAME", name)
                     hashMap.put("URI", downloadUrl.toString())
-                    imageGallery.adapter.notifyDataSetChanged()
+                    hashMap.put("LIKES","0")
+                    imageGallery.refresh()
                     dbStorage(name)
 
                 })
@@ -167,14 +191,15 @@ class PhotoUploadFragment : Fragment() {
         // its contents will be overwritten with the newly provided data,
         // unless you specify that the data should be merged into the existing document,
 
-        var docRef=Constants.db_storageRef.document(string.substring(0, 6))
+        var docRef = Constants.db_storageRef.document(string.substring(0, 6))
 
-            docRef.set(hashMap, SetOptions.merge())
+        docRef.set(hashMap, SetOptions.merge())
             .addOnSuccessListener {
                 OnSuccessListener<Void> {
                     Log.d(
                         Constants.TAG,
-                        "Uploaded to cloud db successfully")
+                        "Uploaded to cloud db successfully"
+                    )
 
 
                 }
@@ -185,8 +210,6 @@ class PhotoUploadFragment : Fragment() {
                     "failure to upload to cloud db"
                 )
             })
-
-
 
 
     }

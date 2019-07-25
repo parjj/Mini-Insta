@@ -29,9 +29,12 @@ class CameraFragment : Fragment() {
     val REQUEST_IMAGE_CAPTURE: Int = 1
     val REQUEST_IMAGE_FROM_PHONE: Int = 2
 
+    val PHOTO_LIBRARY="photo_library"
+    val CAMERA_BACK_FRAGMENT="camer_fragment_back"
+
     private lateinit var take_photo: ImageButton
     private lateinit var upload_photo: ImageButton
-    private lateinit var progressBar: ProgressBar
+//    private lateinit var progressBar: ProgressBar
 
 
     //file paths
@@ -48,7 +51,7 @@ class CameraFragment : Fragment() {
         take_photo = view.findViewById(R.id.takePhoto)
         upload_photo = view.findViewById(R.id.uploadPhoto)
 
-        progressBar = view.findViewById(R.id.progress_bar)
+  //      progressBar = view.findViewById(R.id.progress_bar)
 
         //take photo button
         take_photo.setOnClickListener(object : View.OnClickListener {
@@ -191,32 +194,11 @@ class CameraFragment : Fragment() {
         var transaction = fragmentManager!!.beginTransaction()
         var photoUploadFragment = PhotoUploadFragment()
         photoUploadFragment.arguments = bundle
-        transaction.add(R.id.fragment_container, photoUploadFragment, "photo_library")
-        transaction.addToBackStack("PL")
+        transaction.add(R.id.fragment_container, photoUploadFragment,PHOTO_LIBRARY )
+        transaction.addToBackStack(CAMERA_BACK_FRAGMENT)
         transaction.commit()
     }
 
 
 }
 
-//------------------------------------------------------------------------------------------------------------------------------
-
-//issue on multiple select as images gets loaded twice
-
-
-fun getImageUri(inContext: Context, inImage: Bitmap): Uri {
-    var bytes = ByteArrayOutputStream()
-    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-    var path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-    var uri = Uri.parse(path);
-    return uri
-}
-
-//    override fun onStop() {
-//        super.onStop()
-//        storageRef.child("uploads/").delete()
-//    }
-
-
-//The reason why we have saved image paths in the database is because firebase storage do not provide any api to list files or folders.
-// The only way to get the storage files is by keeping an index of files in our database.

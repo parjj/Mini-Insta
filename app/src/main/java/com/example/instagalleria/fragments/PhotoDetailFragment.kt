@@ -45,13 +45,13 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
 
     var imageGallery = ImageGalleryViewFragment()
 
-    var  likes_count: Long = 0
+    var likes_count: Long = 0
 
     private lateinit var uriString: String
     private lateinit var imageFileName: String
     private lateinit var comments_str: String
     var hashMap: HashMap<String, String> = HashMap<String, String>()
-    var hashMap_forHearts: HashMap<String, Long> = HashMap<String, Long>()
+    var hashMap_forHearts: HashMap<String, String> = HashMap<String, String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -61,7 +61,7 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
         uriString = bundle!!.getString("uri_image_value")  // comming from image view adapter
         imageFileName = bundle!!.getString("uri_image_fileName")  // comming from image view adapter
 
-        imageGallery = fragmentManager!!.fragments.get(1) as ImageGalleryViewFragment
+        imageGallery = fragmentManager!!.fragments.get(3) as ImageGalleryViewFragment
 
         //fetchCommentsFromDB()
 
@@ -78,14 +78,12 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
         settings_button.setOnClickListener(this)// settings button click
         comments_button.setOnClickListener(this)// comments button click
 
-
         adapter = CommentsSectionAdapter(context as Context, imageGallery.userName, commentsDataList)
         listView.adapter = adapter
 
+
         // load all the comments for the image from DB
-        fetchCommentsFromDB()
-        likes_count = fetchLikesFromDB()
-        likes.text = "$likes_count Likes"
+      likes_count=  fetchCommentsFromDB()
 
         return view
 
@@ -97,7 +95,7 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
 
             R.id.hearts -> heartsFunctionCall()
             R.id.settings -> settingsFunctionCall()
-            R.id.comments -> commentsSectionCall()             // call for commenting
+            R.id.comments -> postComments()             // call for commenting
             R.id.backtext -> fragmentManager!!.popBackStack()
 
         }
@@ -109,53 +107,53 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
 
         hearts_button.setBackgroundResource(R.drawable.icn_like_active_optimized)
 
-        var new_count= likes_count!!.plus(1)
+        var new_count = likes_count!!.plus(1)
         likes.text = "$new_count Likes"
-        hashMap_forHearts.put("LIKES", new_count )
+        hashMap_forHearts.put("LIKES", new_count.toString())
 
-       documentReferenceCall(hashMap_forHearts)
+        upDateLikes(hashMap_forHearts)
     }
 
 
-    fun fetchLikesFromDB(): Long {
-
-        Constants.db_storageRef.whereEqualTo("URI", uriString).get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-
-                    var checkLikes = document.data
-
-                    if (document.data.containsKey("LIKES")) {
-                        var likes_no :Long  = checkLikes.get("LIKES") as Long
-
-                        if(likes_no >=0)
-                        {
-                            likes_count= likes_no+1
-                            hashMap_forHearts.put("LIKES", likes_count)
-
-
-                        }
-
-                    }else {
-
-                        hashMap_forHearts.put("LIKES", likes_count)
-                    }
-
-                   documentReferenceCall(hashMap_forHearts)
-                }
-            }
-            .addOnFailureListener(OnFailureListener { exception: Exception ->
-                Log.d(
-                    Constants.TAG,
-                    "failure to upload likes to cloud db"
-                )
-            })
-
-        return likes_count
-    }
+//    fun fetchLikesFromDB(): Long {
+//
+//        Constants.db_storageRef.whereEqualTo("URI", uriString).get()
+//            .addOnSuccessListener { result ->
+//                for (document in result) {
+//
+//                    var checkLikes = document.data
+//
+//                    if (document.data.containsKey("LIKES")) {
+//                        var likes_no :Long  = checkLikes.get("LIKES") as Long
+//
+//                        if(likes_no >=0)
+//                        {
+//                            likes_count= likes_no+1
+//                            hashMap_forHearts.put("LIKES", likes_count)
+//
+//
+//                        }
+//
+//                    }else {
+//
+//                        hashMap_forHearts.put("LIKES", likes_count)
+//                    }
+//
+//                   documentReferenceCall(hashMap_forHearts)
+//                }
+//            }
+//            .addOnFailureListener(OnFailureListener { exception: Exception ->
+//                Log.d(
+//                    Constants.TAG,
+//                    "failure to upload likes to cloud db"
+//                )
+//            })
+//
+//        return likes_count
+//    }
 
     //creating likes field
-    fun   documentReferenceCall( map :HashMap<String,Long>){
+    fun upDateLikes(map: HashMap<String, String>) {
         Constants.db_storageRef.whereEqualTo("URI", uriString).get()
             .addOnSuccessListener { result ->
                 for (document in result) {
@@ -181,8 +179,9 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
 
             }
     }
+
     //post comments
-    fun commentsSectionCall() {
+    fun postComments() {
 
         val inflater = this.layoutInflater
         var alertView = inflater.inflate(R.layout.post_comments, null)  // why am i passing null
@@ -256,12 +255,21 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
     }
 
     // fetch comments from coud DB
-    fun fetchCommentsFromDB() {
+    fun fetchCommentsFromDB(): Long {
+        var i :Long =0
         Constants.db_storageRef.whereEqualTo("URI", uriString).get()
             .addOnSuccessListener(OnSuccessListener { result ->
                 Log.d(TAG, "success getting documents : images")
                 for (document in result) {
 
+                    var map = document.data
+                    var s=  map.get("LIKES")
+                    if(s is String){
+                        i= s.toLong()
+
+                    }
+
+                    likes.text = "$i Likes"
                     document.reference.collection("comments").get()
                         .addOnSuccessListener(OnSuccessListener { tResult ->
                             Log.d(TAG, "success getting documents:comments ")
@@ -290,7 +298,7 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
                 Log.d(TAG, "Error getting documents : images")
             }
 
-
+        return i
     }
 }
 

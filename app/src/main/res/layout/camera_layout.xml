@@ -11,14 +11,7 @@
         android:clickable="true"
         tools:context=".MainActivity">
 
-    <fragment android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              class="com.example.instagalleria.fragments.ToolbarTopFragment"
-              android:id="@+id/tooltop"
-              app:layout_constraintTop_toTopOf="parent"
-              app:layout_constraintBottom_toTopOf="@id/recyclerView"
 
-    />
 
     <FrameLayout
             android:id="@+id/frame1"
@@ -89,11 +82,5 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
     />
-    <fragment android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              class="com.example.instagalleria.fragments.ToolbarBottomFragment"
-              android:layout_below="@id/recyclerView"
-              app:layout_constraintTop_toBottomOf="@id/recyclerView"
-              app:layout_constraintBottom_toBottomOf="parent"
-              android:id="@+id/toolbot_cl"/>
+
 </LinearLayout>

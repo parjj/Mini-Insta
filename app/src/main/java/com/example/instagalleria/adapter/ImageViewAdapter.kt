@@ -21,6 +21,7 @@ class ImageViewAdapter(var context: Context, var images_urls: ArrayList<UploadIm
     RecyclerView.Adapter<ImageViewAdapter.ImageViewHolder>() {
 
     val IMAGE_VIEW_ADAPTER="imageViewAdapter"
+    val PHOTO_DETAIL="photo_detail"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
 
@@ -53,7 +54,7 @@ class ImageViewAdapter(var context: Context, var images_urls: ArrayList<UploadIm
                 bundle.putString("uri_image_fileName",fileName)
 
                 photoDetailFragment.arguments = bundle
-                fragmentTransaction.add(R.id.fragment_container, photoDetailFragment, "photo_detail")
+                fragmentTransaction.add(R.id.fragment_container, photoDetailFragment,PHOTO_DETAIL )
                 fragmentTransaction.addToBackStack(IMAGE_VIEW_ADAPTER)
                 fragmentTransaction.commit()
 
