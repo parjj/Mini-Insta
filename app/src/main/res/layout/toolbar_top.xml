@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v7.widget.Toolbar
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbar_top"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:gravity="top"
         android:background="#707191"
 >
-    <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_top"
-            android:minHeight="?attr/actionBarSize"
-            android:layout_width="match_parent"
+
+
+    <Button android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-    >
+            android:id="@+id/backtext"
+            android:textSize="20dp"
+            android:textColor="@android:color/black"
+            android:background="@android:color/transparent"
+            android:padding="5dp"
+            android:gravity="center"
 
-        <Button android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/backtext"
-                  android:textSize="10dp"
-                  android:textColor="@android:color/black"
-                  android:background="@android:color/transparent"
-        />
+    />
 
-        <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/title"
-                android:text="@string/app_name"
-                android:textAlignment="center"
-                android:textSize="23dp"
-                android:textColor="@android:color/white"
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/title"
+            android:text="@string/app_name"
+            android:textSize="23dp"
+            android:layout_marginRight="50dp"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:inputType="text"
+            android:textStyle="italic"
+            android:padding="5dp"/>
 
 
-        />
-
-
-    </android.support.v7.widget.Toolbar>
-</LinearLayout>
+</android.support.v7.widget.Toolbar>

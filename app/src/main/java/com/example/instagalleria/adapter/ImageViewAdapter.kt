@@ -20,8 +20,8 @@ import com.example.instagalleria.model.Constants.Companion.TAG
 class ImageViewAdapter(var context: Context, var images_urls: ArrayList<UploadImage>) :
     RecyclerView.Adapter<ImageViewAdapter.ImageViewHolder>() {
 
-    val IMAGE_VIEW_ADAPTER="imageViewAdapter"
-    val PHOTO_DETAIL="photo_detail"
+    val IMAGE_VIEW_ADAPTER_BACKSTACK="imageViewAdapter_backStack"
+    val PHOTO_DETAIL_TAG="photo_detail_tag"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
 
@@ -39,7 +39,7 @@ class ImageViewAdapter(var context: Context, var images_urls: ArrayList<UploadIm
 
         var uri = images_urls.get(pos).uriString
 
-        Glide.with(context).load(uri).into(imageHolder.imageView);
+        Glide.with(context).load(uri).centerCrop().into(imageHolder.imageView);
 
         imageHolder.layout
             .setOnClickListener(View.OnClickListener { v ->
@@ -54,8 +54,8 @@ class ImageViewAdapter(var context: Context, var images_urls: ArrayList<UploadIm
                 bundle.putString("uri_image_fileName",fileName)
 
                 photoDetailFragment.arguments = bundle
-                fragmentTransaction.add(R.id.fragment_container, photoDetailFragment,PHOTO_DETAIL )
-                fragmentTransaction.addToBackStack(IMAGE_VIEW_ADAPTER)
+                fragmentTransaction.add(R.id.fragment_container, photoDetailFragment,PHOTO_DETAIL_TAG )
+                fragmentTransaction.addToBackStack(IMAGE_VIEW_ADAPTER_BACKSTACK)
                 fragmentTransaction.commit()
 
             })

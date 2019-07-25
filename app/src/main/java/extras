@@ -477,6 +477,43 @@ private Fragment getCurrentFragment(){
 }
  ---------------------------------------------------------------------------------------------------------------------------------
 
+//    fun fetchLikesFromDB(): Long {
+//
+//        Constants.db_storageRef.whereEqualTo("URI", uriString).get()
+//            .addOnSuccessListener { result ->
+//                for (document in result) {
+//
+//                    var checkLikes = document.data
+//
+//                    if (document.data.containsKey("LIKES")) {
+//                        var likes_no :Long  = checkLikes.get("LIKES") as Long
+//
+//                        if(likes_no >=0)
+//                        {
+//                            likes_count= likes_no+1
+//                            hashMap_forHearts.put("LIKES", likes_count)
+//
+//
+//                        }
+//
+//                    }else {
+//
+//                        hashMap_forHearts.put("LIKES", likes_count)
+//                    }
+//
+//                   documentReferenceCall(hashMap_forHearts)
+//                }
+//            }
+//            .addOnFailureListener(OnFailureListener { exception: Exception ->
+//                Log.d(
+//                    Constants.TAG,
+//                    "failure to upload likes to cloud db"
+//                )
+//            })
+//
+//        return likes_count
+//    }
+
 
 
 

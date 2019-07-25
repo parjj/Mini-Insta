@@ -15,9 +15,9 @@ import com.google.firebase.auth.FirebaseAuth
 class ToolbarTopFragment() :Fragment(){
 
 
-    public lateinit var toolbar_top: Toolbar
-    public lateinit var toolbar_back: TextView
-    public lateinit var toolbar_title: EditText
+     lateinit var toolbar_top: Toolbar
+     lateinit var toolbar_back: TextView
+     lateinit var toolbar_title: TextView
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

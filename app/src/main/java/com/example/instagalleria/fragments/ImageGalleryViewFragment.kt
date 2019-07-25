@@ -32,10 +32,13 @@ class ImageGalleryViewFragment : Fragment() {
     var uploadList = ArrayList<UploadImage>()
     lateinit var adapter: ImageViewAdapter
 
+    lateinit var fragment_login: LoginPageFragment
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         var view = inflater.inflate(R.layout.image_gallery_layout, container, false)
+
         getAllDocumentsFromDB()    // fetching data(all images) from the firebase DB
 
         var bundle = arguments
@@ -46,10 +49,20 @@ class ImageGalleryViewFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
 
         var gridLayoutManager = GridLayoutManager(this.context, 3)
-        recyclerView.layoutManager = gridLayoutManager
+        recyclerView.layoutManager = gridLayoutManager as RecyclerView.LayoutManager?
 
         adapter = ImageViewAdapter(context!!, uploadList)
         recyclerView.adapter = adapter
+
+
+        fragment_login = fragmentManager!!.fragments.get(2) as LoginPageFragment
+//        fragment_login.toolbarShow()
+
+        if ((!(fragment_login.fragment_toolbar_top!!.isVisible)) && (!(fragment_login.fragment_toolbar_bottom!!.isVisible)) ){
+            fragment_login.fragment_toolbar_top!!.view!!.visibility = View.VISIBLE
+            fragment_login.fragment_toolbar_bottom!!.view!!.visibility = View.VISIBLE
+
+        }
 
 
         return view
@@ -74,13 +87,13 @@ class ImageGalleryViewFragment : Fragment() {
 
                     if (nameString.containsKey("LIKES")) {
 
-                        var l= nameString.get("LIKES")
-                        if(l is String){
+                        var l = nameString.get("LIKES")
+                        if (l is String) {
 
-                          var num = l.toLong()
-                            if(num <=0){
+                            var num = l.toLong()
+                            if (num <= 0) {
 
-                                Log.d(TAG," count value " + num )
+                                Log.d(TAG, " count value " + num)
                             }
                         }
 
@@ -111,8 +124,3 @@ class ImageGalleryViewFragment : Fragment() {
         }
     }
 }
-
-
-//next to do is live listner for the db
-// toolbar set up common one
-//

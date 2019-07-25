@@ -28,7 +28,6 @@ import kotlin.collections.ArrayList
 
 class PhotoUploadFragment : Fragment() {
 
-
     lateinit var adapter: PhotoUploadAdapter
 
     lateinit var gridView: GridView
@@ -39,10 +38,8 @@ class PhotoUploadFragment : Fragment() {
     private var photos_list: ArrayList<Uri>? = null
 
     private lateinit var uri_value: Uri
-    val IMAGE_GALLERY_FRAGMENT = "image_gallery"
 
     var imageGallery = ImageGalleryViewFragment()
-    var loginPageFragment = LoginPageFragment()
     var hashMap: HashMap<String, String> = HashMap<String, String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -54,25 +51,7 @@ class PhotoUploadFragment : Fragment() {
         var bundle = arguments!!
         var str = bundle.getString("uri_string")
 
-        var fragments= fragmentManager!!.fragments
-
-        Log.d(TAG,fragments.toString())
-        Log.d(TAG,fragments.get(1).toString())
-        Log.d(TAG,fragments.get(2).toString())
-        Log.d(TAG,fragments.get(0).toString())
-        Log.d(TAG,fragments.get(3).toString())
-        Log.d(TAG,fragments.get(4).toString())
-
-         var v= fragmentManager!!.findFragmentByTag(IMAGE_GALLERY_FRAGMENT)
-
-         var f= fragmentManager!!.backStackEntryCount
-
-
-        Log.d(TAG, f.toString())
-        Log.d(TAG, v.toString())
-
         imageGallery = fragmentManager!!.fragments.get(3) as ImageGalleryViewFragment
-       // loginPageFragment = fragmentManager!!.fragments.get(0) as LoginPageFragment
 
         gridView = view.findViewById(R.id.gridView_pl)
         upload_button = view.findViewById(R.id.uploadMultiple)
@@ -101,6 +80,8 @@ class PhotoUploadFragment : Fragment() {
         //upload button click
         upload_button.setOnClickListener(View.OnClickListener { l ->
 
+            Toast.makeText(context,"Upload button clicked",Toast.LENGTH_SHORT).show()
+            imageGallery.adapter.notifyDataSetChanged()
 
             if (photos_list != null) {
                 for (photoUri in photos_list!!) {
@@ -109,16 +90,8 @@ class PhotoUploadFragment : Fragment() {
             } else {
                 upload(uri_value)
             }
-
-
-            var fms = fragmentManager!!.fragments
-            fragmentManager!!.popBackStack(
-               imageGallery.id,
-                FragmentManager.POP_BACK_STACK_INCLUSIVE
-            ) // not working
-
+            fragmentManager!!.popBackStack("toolbar_bottom_backStack", FragmentManager.POP_BACK_STACK_INCLUSIVE)
         })
-
 
         return view;
 
@@ -162,8 +135,7 @@ class PhotoUploadFragment : Fragment() {
                     hashMap.put("USER", user)
                     hashMap.put("NAME", name)
                     hashMap.put("URI", downloadUrl.toString())
-                    hashMap.put("LIKES","0")
-                    imageGallery.refresh()
+                    //hashMap.put("LIKES","0")
                     dbStorage(name)
 
                 })
@@ -213,6 +185,5 @@ class PhotoUploadFragment : Fragment() {
 
 
     }
-
 
 }

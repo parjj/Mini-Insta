@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.util.Log
@@ -46,6 +47,8 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
     var imageGallery = ImageGalleryViewFragment()
 
     var likes_count: Long = 0
+    var list_of_likes=ArrayList<Long>()
+    lateinit var liked_user:String
 
     private lateinit var uriString: String
     private lateinit var imageFileName: String
@@ -63,7 +66,9 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
 
         imageGallery = fragmentManager!!.fragments.get(3) as ImageGalleryViewFragment
 
-        //fetchCommentsFromDB()
+        imageGallery.fragment_login.fragment_toolbar_top.toolbar_title.setText("Photo Detail")
+        imageGallery.fragment_login.fragment_toolbar_top.toolbar_back.visibility=View.VISIBLE
+
 
         imageView = view.findViewById(R.id.image_detail)
         hearts_button = view.findViewById(R.id.hearts)
@@ -83,7 +88,15 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
 
 
         // load all the comments for the image from DB
-      likes_count=  fetchCommentsFromDB()
+        likes_count = fetchCommentsFromDB()
+
+
+        // listview long click remove
+        listView.setOnItemClickListener { parent, view, position, id ->
+
+            commentsDataList.removeAt(position)
+            adapter.notifyDataSetChanged()
+        }
 
         return view
 
@@ -93,8 +106,8 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
 
         when (v!!.id) {
 
-            R.id.hearts -> heartsFunctionCall()
-            R.id.settings -> settingsFunctionCall()
+            R.id.hearts -> heartLikes()
+            R.id.settings -> settings()
             R.id.comments -> postComments()             // call for commenting
             R.id.backtext -> fragmentManager!!.popBackStack()
 
@@ -103,75 +116,41 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
     }
 
     // heart likes capture
-    fun heartsFunctionCall() {
+    fun heartLikes() {
 
         hearts_button.setBackgroundResource(R.drawable.icn_like_active_optimized)
 
         var new_count = likes_count!!.plus(1)
         likes.text = "$new_count Likes"
-        hashMap_forHearts.put("LIKES", new_count.toString())
+        hashMap_forHearts.put("LIKES_COUNT", new_count.toString())
+        hashMap_forHearts.put("LIKED_USER", imageGallery.userName)
 
-        upDateLikes(hashMap_forHearts)
+        uploadLikes(hashMap_forHearts)
     }
 
-
-//    fun fetchLikesFromDB(): Long {
-//
-//        Constants.db_storageRef.whereEqualTo("URI", uriString).get()
-//            .addOnSuccessListener { result ->
-//                for (document in result) {
-//
-//                    var checkLikes = document.data
-//
-//                    if (document.data.containsKey("LIKES")) {
-//                        var likes_no :Long  = checkLikes.get("LIKES") as Long
-//
-//                        if(likes_no >=0)
-//                        {
-//                            likes_count= likes_no+1
-//                            hashMap_forHearts.put("LIKES", likes_count)
-//
-//
-//                        }
-//
-//                    }else {
-//
-//                        hashMap_forHearts.put("LIKES", likes_count)
-//                    }
-//
-//                   documentReferenceCall(hashMap_forHearts)
-//                }
-//            }
-//            .addOnFailureListener(OnFailureListener { exception: Exception ->
-//                Log.d(
-//                    Constants.TAG,
-//                    "failure to upload likes to cloud db"
-//                )
-//            })
-//
-//        return likes_count
-//    }
-
-    //creating likes field
-    fun upDateLikes(map: HashMap<String, String>) {
+    //upload the likes field in cloud db
+    fun uploadLikes(map: HashMap<String, String>) {
         Constants.db_storageRef.whereEqualTo("URI", uriString).get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    document.reference.update(hashMap_forHearts as Map<String, Int>)
+                    var sub_coll_likes: DocumentReference
+                    sub_coll_likes =
+                        document.reference.collection("likes").document("LIKES_FOR_" + imageFileName.substring(0,3))
+
+
+                    sub_coll_likes.set(map , SetOptions.merge())
                         .addOnSuccessListener {
                             OnSuccessListener<Void> {
                                 Log.d(
                                     Constants.TAG,
-                                    "Uploaded  field likes to cloud db successfully"
+                                    "Uploaded  collection likes to cloud db successfully"
                                 )
-
-
                             }
                         }
                         .addOnFailureListener(OnFailureListener { exception: Exception ->
                             Log.d(
                                 Constants.TAG,
-                                "failure to upload field likes to cloud db"
+                                "failure to upload collection likes to cloud db"
                             )
                         })
                 }
@@ -218,9 +197,35 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
     }
 
 
-    fun settingsFunctionCall() {
+    //delete function
+    fun settings() {
+
+        val inflater = this.layoutInflater
+        var alertViewS = inflater.inflate(R.layout.settings_layout, null)  // why am i passing null
+        var builderS = AlertDialog.Builder(this.context)
+        builderS.setView(alertViewS)
+
+        var alertDialogS = builderS.create()
+
+        var deleteB = alertViewS.findViewById<EditText>(R.id.delete_id)
+        var cancelB = alertViewS.findViewById<Button>(R.id.cancel_id)
+
+        deleteB.setOnClickListener(View.OnClickListener { l->
+
+            fragmentManager!!.popBackStack("imageViewAdapter_backStack",FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            //deleteInFB()
+
+        })
 
 
+        cancelB.setOnClickListener(View.OnClickListener { v->
+
+            alertDialogS.dismiss()
+
+
+        })
+
+        alertDialogS.show()
     }
 
     // upload the comments to cloud DB
@@ -256,20 +261,13 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
 
     // fetch comments from coud DB
     fun fetchCommentsFromDB(): Long {
-        var i :Long =0
+        var i: Long = 0
         Constants.db_storageRef.whereEqualTo("URI", uriString).get()
             .addOnSuccessListener(OnSuccessListener { result ->
                 Log.d(TAG, "success getting documents : images")
                 for (document in result) {
 
-                    var map = document.data
-                    var s=  map.get("LIKES")
-                    if(s is String){
-                        i= s.toLong()
-
-                    }
-
-                    likes.text = "$i Likes"
+                    //get from collection comments
                     document.reference.collection("comments").get()
                         .addOnSuccessListener(OnSuccessListener { tResult ->
                             Log.d(TAG, "success getting documents:comments ")
@@ -291,6 +289,34 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
                             Log.d(TAG, "Error getting documents : comments")
                         }
 
+                    //get from collection likes
+                    document.reference.collection("likes").get()
+                        .addOnSuccessListener(OnSuccessListener { result ->
+                            Log.d(TAG, "success getting documents:likes ")
+                            for (comment_data in result) {
+
+                                var data = comment_data.data
+
+                                var count = data.get("LIKES_COUNT")
+                                liked_user = data.get("LIKED_USER") as String
+
+                                if(imageGallery.userName.equals(liked_user)){
+                                    hearts_button.setBackgroundResource(R.drawable.icn_like_active_optimized)
+
+                                }
+
+                                likes.text= "$count Likes"
+
+
+
+                            }
+
+                        })
+                        .addOnFailureListener { exception ->
+                            Log.d(TAG, "Error getting documents : likes")
+                        }
+
+
                 }
 
             })
@@ -301,6 +327,12 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
         return i
     }
 }
+
+
+// each user gets adding to the like
+
+// just check if you need a field for likes so that u get the whole count
+//also images on the toolbar check 
 
 
 

@@ -16,7 +16,21 @@
               app:layout_constraintLeft_toLeftOf="parent"
               app:layout_constraintRight_toRightOf="parent"
               app:layout_constraintBottom_toTopOf="@id/fragment_container"
+              android:tag="toolbar_top_tag"
+
+
     />
+
+    <fragment android:layout_width="match_parent"
+              android:layout_height="0dp"
+              class="com.example.instagalleria.fragments.ToolbarBottomFragment"
+              app:layout_constraintDimensionRatio="H,1:0.15"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintTop_toBottomOf="@id/fragment_container"
+              android:tag="toolbar_bottom_tag"
+              android:id="@+id/toolbottom"/>
 
     <FrameLayout android:layout_width="0dp" android:layout_height="0dp"
                  app:layout_constraintTop_toBottomOf="@id/tooltop"
@@ -34,19 +48,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/mainFragment"
-                android:tag="fragment_tag"
+                android:tag="login_tag"
                 app:layout_constraintTop_toBottomOf="@id/tooltop"
         />
     </FrameLayout>
-        <fragment android:layout_width="match_parent"
-                  android:layout_height="0dp"
-                  class="com.example.instagalleria.fragments.ToolbarBottomFragment"
-                  app:layout_constraintDimensionRatio="H,1:0.1"
-                  app:layout_constraintBottom_toBottomOf="parent"
-                  app:layout_constraintLeft_toLeftOf="parent"
-                  app:layout_constraintRight_toRightOf="parent"
-                  app:layout_constraintTop_toBottomOf="@id/fragment_container"
-                  android:id="@+id/toolbottom"/>
+
 
 </android.support.constraint.ConstraintLayout>
 

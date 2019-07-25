@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.bumptech.glide.Glide
 import com.example.instagalleria.R
 import com.example.instagalleria.model.Constants.Companion.TAG
 import java.io.ByteArrayOutputStream
@@ -29,8 +30,8 @@ class CameraFragment : Fragment() {
     val REQUEST_IMAGE_CAPTURE: Int = 1
     val REQUEST_IMAGE_FROM_PHONE: Int = 2
 
-    val PHOTO_LIBRARY="photo_library"
-    val CAMERA_BACK_FRAGMENT="camer_fragment_back"
+    val PHOTO_UPLOAD_TAG="photo_upload_tag"
+    val CAMERA_FRAGMENT_BACKSTACK="camer_fragment_backstack"
 
     private lateinit var take_photo: ImageButton
     private lateinit var upload_photo: ImageButton
@@ -43,7 +44,6 @@ class CameraFragment : Fragment() {
     private lateinit var photoUri: Uri
     private lateinit var photoIntent: Intent
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         var view = inflater.inflate(R.layout.camera_layout, container, false)
@@ -51,7 +51,11 @@ class CameraFragment : Fragment() {
         take_photo = view.findViewById(R.id.takePhoto)
         upload_photo = view.findViewById(R.id.uploadPhoto)
 
-  //      progressBar = view.findViewById(R.id.progress_bar)
+     // progressBar = view.findViewById(R.id.progress_bar)
+
+        var imageGallery = fragmentManager!!.fragments.get(3) as ImageGalleryViewFragment
+
+       // imageGallery.fragment_login.fragment_toolbar_top.toolbar_title.setText("Photo Detail")
 
         //take photo button
         take_photo.setOnClickListener(object : View.OnClickListener {
@@ -103,7 +107,6 @@ class CameraFragment : Fragment() {
     fun getPhotoUri(): Uri {
         var photoFile: File? = null
 
-        //File storageDir =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         val storageDir = context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
         storageDir!!.mkdirs()
@@ -194,8 +197,8 @@ class CameraFragment : Fragment() {
         var transaction = fragmentManager!!.beginTransaction()
         var photoUploadFragment = PhotoUploadFragment()
         photoUploadFragment.arguments = bundle
-        transaction.add(R.id.fragment_container, photoUploadFragment,PHOTO_LIBRARY )
-        transaction.addToBackStack(CAMERA_BACK_FRAGMENT)
+        transaction.add(R.id.fragment_container, photoUploadFragment,PHOTO_UPLOAD_TAG)
+        transaction.addToBackStack(CAMERA_FRAGMENT_BACKSTACK)
         transaction.commit()
     }
 

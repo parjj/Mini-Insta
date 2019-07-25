@@ -25,12 +25,15 @@ import android.R.attr.password
 
 class LoginPageFragment : Fragment() {
 
-    private val LOGIN_PAGE = "login_page"
-    val IMAGE_GALLERY_FRAGMENT = "image_gallery"
+    private val LOGIN_PAGE_BACKSTACK = "login_page_backstack"
+    val IMAGE_GALLERY_TAG = "image_gallery_tag"
     private lateinit var email: EditText
     private lateinit var password: EditText
     private lateinit var login_button: Button
     private lateinit var new_user: Button
+
+    var fragment_toolbar_top =ToolbarTopFragment()
+    var fragment_toolbar_bottom =ToolbarBottomFragment()
 
     lateinit var auth: FirebaseAuth
 
@@ -40,12 +43,22 @@ class LoginPageFragment : Fragment() {
 
         var view: View = inflater.inflate(R.layout.user_login, container, false)
 
+        fragment_toolbar_top = fragmentManager!!.findFragmentByTag("toolbar_top_tag") as ToolbarTopFragment
+        fragment_toolbar_bottom = fragmentManager!!.findFragmentByTag("toolbar_bottom_tag") as ToolbarBottomFragment
+
+
         email = view.findViewById(R.id.username)
         password = view.findViewById(R.id.password)
         login_button = view.findViewById(R.id.loginB)
         new_user = view.findViewById(R.id.newUser)
 
+        toolbarHidden()
 
+        Log.d(TAG, fragment_toolbar_top.toString())
+        Log.d(TAG, fragment_toolbar_bottom.toString())
+
+
+        //user already logged in or not check
         getUserProfile()
 
         // login button click
@@ -181,8 +194,8 @@ class LoginPageFragment : Fragment() {
         var imageGalleryViewFragment = ImageGalleryViewFragment()
 
         imageGalleryViewFragment.arguments = bundle
-        fragmentTransaction.add(R.id.fragment_container, imageGalleryViewFragment,IMAGE_GALLERY_FRAGMENT )
-        fragmentTransaction.addToBackStack(LOGIN_PAGE)
+        fragmentTransaction.add(R.id.fragment_container, imageGalleryViewFragment, IMAGE_GALLERY_TAG)
+        //fragmentTransaction.addToBackStack(LOGIN_PAGE_BACKSTACK)
         fragmentTransaction.commit()
 
     }
@@ -201,6 +214,24 @@ class LoginPageFragment : Fragment() {
 
         }
 
+    }
+
+    // toolbar hidden function
+    fun toolbarHidden() {
+        if ((!(fragment_toolbar_top!!.isHidden)) && (!(fragment_toolbar_bottom!!.isHidden))) {
+            fragment_toolbar_top!!.view!!.visibility = View.GONE
+            fragment_toolbar_bottom!!.view!!.visibility = View.GONE
+        }
+    }
+
+    //toolbar show
+    fun toolbarShow(){
+
+        if ((!(fragment_toolbar_top!!.isVisible)) && (!(fragment_toolbar_bottom!!.isVisible)) ){
+            fragment_toolbar_top!!.view!!.visibility = View.VISIBLE
+            fragment_toolbar_bottom!!.view!!.visibility = View.VISIBLE
+
+        }
     }
 }
 
