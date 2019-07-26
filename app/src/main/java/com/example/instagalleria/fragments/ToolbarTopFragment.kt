@@ -31,7 +31,7 @@ class ToolbarTopFragment() :Fragment(){
         toolbar_back = view.findViewById(R.id.backtext)
         toolbar_title = view.findViewById(R.id.title)
         toolbar_back.visibility = View.GONE
-        toolbar_back.text="BACK"
+      //  toolbar_back.text="BACK"
         toolbar_title.setText("Insta Gallery")
         toolbar_title.gravity = Gravity.CENTER_VERTICAL
         toolbar_top.inflateMenu(R.menu.settings)

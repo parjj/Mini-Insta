@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">InstaGalleria</string>
-
+    <string name="back">&lt;BACK</string>
 </resources>

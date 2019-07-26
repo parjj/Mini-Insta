@@ -518,3 +518,13 @@ private Fragment getCurrentFragment(){
 
 
  ---------------------------------------------------------------------------------------------------------------------------------
+Even your question is answered, still i want tell more entities same like this. These are html entities, so in android you will write them like:
+
+Replace below with:
+
+& with &amp;
+> with &gt;
+< with &lt;
+" with &quot;, &ldquo; or &rdquo;
+' with &apos;, &lsquo; or &rsquo;
+} with &#125;

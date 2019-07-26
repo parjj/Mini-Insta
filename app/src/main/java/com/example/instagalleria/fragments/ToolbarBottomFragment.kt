@@ -34,8 +34,9 @@ class ToolbarBottomFragment() :Fragment(){
         //home icon
         toolbar_left.setOnClickListener( View.OnClickListener { v->
 
-            toolbar_left.setBackgroundResource(R.drawable.home_inactive_optimized)
-            toolbar_right.setBackgroundResource(R.drawable.icn_photo_inactive_optimized)
+
+            toolbar_left.setImageResource(R.drawable.home_inactive_optimized)
+            toolbar_right.setImageResource(R.drawable.icn_photo_inactive_optimized)
 
             fragmentManager!!.popBackStack(TOOLBAR_BOTTOM_BACKSTACK, FragmentManager.POP_BACK_STACK_INCLUSIVE)   // the backstack is the key
         })
@@ -44,8 +45,8 @@ class ToolbarBottomFragment() :Fragment(){
         //camera icon
         toolbar_right.setOnClickListener(View.OnClickListener { l ->
 
-            toolbar_left.setBackgroundResource(R.drawable.home_active_optimized)
-            toolbar_right.setBackgroundResource(R.drawable.icn_photo_inactive_optimized)
+            toolbar_left.setImageResource(R.drawable.home_active_optimized)
+            toolbar_right.setImageResource(R.drawable.icn_photo_inactive_optimized)
 
 
             try {

@@ -16,6 +16,7 @@ import com.example.instagalleria.R
 import com.example.instagalleria.adapter.PhotoUploadAdapter
 import com.example.instagalleria.model.Constants
 import com.example.instagalleria.model.Constants.Companion.TAG
+import com.example.instagalleria.model.UploadImage
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
@@ -81,7 +82,6 @@ class PhotoUploadFragment : Fragment() {
         upload_button.setOnClickListener(View.OnClickListener { l ->
 
             Toast.makeText(context,"Upload button clicked",Toast.LENGTH_SHORT).show()
-            imageGallery.adapter.notifyDataSetChanged()
 
             if (photos_list != null) {
                 for (photoUri in photos_list!!) {
@@ -90,7 +90,8 @@ class PhotoUploadFragment : Fragment() {
             } else {
                 upload(uri_value)
             }
-            fragmentManager!!.popBackStack("toolbar_bottom_backStack", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+         fragmentManager!!.popBackStack("toolbar_bottom_backStack", FragmentManager.POP_BACK_STACK_INCLUSIVE)
         })
 
         return view;
@@ -135,7 +136,11 @@ class PhotoUploadFragment : Fragment() {
                     hashMap.put("USER", user)
                     hashMap.put("NAME", name)
                     hashMap.put("URI", downloadUrl.toString())
-                    //hashMap.put("LIKES","0")
+
+                    var uploadImage = UploadImage(name as String, downloadUrl.toString() as String)
+                    imageGallery.uploadList.add(uploadImage)
+                    imageGallery.refresh()
+
                     dbStorage(name)
 
                 })

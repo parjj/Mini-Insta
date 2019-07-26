@@ -47,8 +47,8 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
     var imageGallery = ImageGalleryViewFragment()
 
     var likes_count: Long = 0
-    var list_of_likes=ArrayList<Long>()
     lateinit var liked_user:String
+    lateinit var userCheck:String
 
     private lateinit var uriString: String
     private lateinit var imageFileName: String
@@ -83,20 +83,19 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
         settings_button.setOnClickListener(this)// settings button click
         comments_button.setOnClickListener(this)// comments button click
 
+        // load all the comments for the image from DB
+        userCheck = fetchCommentsFromDB()
+
+        Log.d(TAG,"inside on create"+commentsDataList.toString())
         adapter = CommentsSectionAdapter(context as Context, imageGallery.userName, commentsDataList)
         listView.adapter = adapter
 
-
-        // load all the comments for the image from DB
-        likes_count = fetchCommentsFromDB()
-
-
-        // listview long click remove
-        listView.setOnItemClickListener { parent, view, position, id ->
-
-            commentsDataList.removeAt(position)
-            adapter.notifyDataSetChanged()
-        }
+//        // listview long click remove
+//        listView.setOnItemClickListener { parent, view, position, id ->
+//
+//            commentsDataList.removeAt(position)
+//            adapter.notifyDataSetChanged()
+//        }
 
         return view
 
@@ -118,12 +117,22 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
     // heart likes capture
     fun heartLikes() {
 
-        hearts_button.setBackgroundResource(R.drawable.icn_like_active_optimized)
+        if(userCheck.equals("true")){
+
+            hearts_button.setBackgroundResource(R.drawable.icn_like_active_optimized)
+        }else{
+            hearts_button.setBackgroundResource(R.drawable.icn_like_inactive_optimized)
+
+        }
+
+       // hearts_button.setBackgroundResource(R.drawable.icn_like_active_optimized)
 
         var new_count = likes_count!!.plus(1)
         likes.text = "$new_count Likes"
         hashMap_forHearts.put("LIKES_COUNT", new_count.toString())
-        hashMap_forHearts.put("LIKED_USER", imageGallery.userName)
+        hashMap_forHearts.put("USERNAME_LIKES", imageGallery.userName)
+        hashMap_forHearts.put("USER_LIKED", "true")
+
 
         uploadLikes(hashMap_forHearts)
     }
@@ -184,16 +193,16 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
             uploadCommentsToStorage(comments_str)
 
             // commentsList.add(comments_str)
-            comments_data = CommentsData(imageGallery.userName, comments_str)
-            commentsDataList.add(comments_data)
+           var comments_data1 = CommentsData(imageGallery.userName, comments_str)
+            commentsDataList.add(comments_data1)
+            adapter.notifyDataSetChanged()
+
+            Log.d(TAG,"inside post"+commentsDataList.toString())
+
             alertDialog.dismiss()
 
         })
-
-
-
         alertDialog.show()
-
     }
 
 
@@ -207,7 +216,7 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
 
         var alertDialogS = builderS.create()
 
-        var deleteB = alertViewS.findViewById<EditText>(R.id.delete_id)
+        var deleteB = alertViewS.findViewById<Button>(R.id.delete_id)
         var cancelB = alertViewS.findViewById<Button>(R.id.cancel_id)
 
         deleteB.setOnClickListener(View.OnClickListener { l->
@@ -260,8 +269,10 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
     }
 
     // fetch comments from coud DB
-    fun fetchCommentsFromDB(): Long {
-        var i: Long = 0
+    fun fetchCommentsFromDB(): String {
+
+          var userNameCheck:String="0"
+          var count:String="0"
         Constants.db_storageRef.whereEqualTo("URI", uriString).get()
             .addOnSuccessListener(OnSuccessListener { result ->
                 Log.d(TAG, "success getting documents : images")
@@ -279,6 +290,7 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
                                 var comm_user = data.get("USERNAME")
 
                                 comments_data = CommentsData(comm_user as String, comm as String)
+                                Log.d(TAG,"inside fetch "+commentsDataList.toString())
                                 commentsDataList.add(comments_data)
                                 adapter.notifyDataSetChanged()
 
@@ -297,36 +309,36 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener {
 
                                 var data = comment_data.data
 
-                                var count = data.get("LIKES_COUNT")
-                                liked_user = data.get("LIKED_USER") as String
+                                  count = data.get("LIKES_COUNT") as String
+                                if(count is String) {
+                                    likes_count = count.toLong()
+                                }
+                                liked_user = data.get("USERNAME_LIKES") as String
+                                userNameCheck = data.get("USER_LIKED") as String
 
-                                if(imageGallery.userName.equals(liked_user)){
+                                if(userNameCheck.equals("true")){
+
                                     hearts_button.setBackgroundResource(R.drawable.icn_like_active_optimized)
+                                }else{
+                                    hearts_button.setBackgroundResource(R.drawable.icn_like_inactive_optimized)
 
                                 }
 
-                                likes.text= "$count Likes"
-
-
-
+                                likes.text= count+" Likes"
                             }
-
                         })
                         .addOnFailureListener { exception ->
                             Log.d(TAG, "Error getting documents : likes")
                         }
-
-
                 }
-
             })
             .addOnFailureListener { exception ->
                 Log.d(TAG, "Error getting documents : images")
             }
-
-        return i
+        return userNameCheck
     }
 }
+
 
 
 // each user gets adding to the like

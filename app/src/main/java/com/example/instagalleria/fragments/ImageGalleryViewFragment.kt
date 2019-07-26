@@ -56,13 +56,18 @@ class ImageGalleryViewFragment : Fragment() {
 
 
         fragment_login = fragmentManager!!.fragments.get(2) as LoginPageFragment
-//        fragment_login.toolbarShow()
+
+
 
         if ((!(fragment_login.fragment_toolbar_top!!.isVisible)) && (!(fragment_login.fragment_toolbar_bottom!!.isVisible)) ){
             fragment_login.fragment_toolbar_top!!.view!!.visibility = View.VISIBLE
             fragment_login.fragment_toolbar_bottom!!.view!!.visibility = View.VISIBLE
 
+
         }
+
+        fragment_login.fragment_toolbar_top.toolbar_title.setText("Insta Gallery")
+        fragment_login.fragment_toolbar_top.toolbar_back.visibility=View.GONE
 
 
         return view
@@ -124,3 +129,6 @@ class ImageGalleryViewFragment : Fragment() {
         }
     }
 }
+
+// issues on back from photo detail the frag to image gallery the toolbar top remains the same shows photo detail and back button
+// list view not scrolling do i need to change
