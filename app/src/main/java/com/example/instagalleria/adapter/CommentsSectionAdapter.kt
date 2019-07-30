@@ -26,9 +26,8 @@ class CommentsSectionAdapter() : BaseAdapter() {
 
     lateinit var commentsList: ArrayList<CommentsData>
 
-    constructor(context: Context, username: String,commentsList: ArrayList<CommentsData>) : this() {
+    constructor(context: Context,commentsList: ArrayList<CommentsData>) : this() {
         this.context = context
-        this.username = username
         this.commentsList = commentsList
     }
 
@@ -39,7 +38,7 @@ class CommentsSectionAdapter() : BaseAdapter() {
 
         var layoutInflater = parent!!.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-        var view = layoutInflater.inflate(R.layout.comment_section, parent, false)
+        var view = layoutInflater.inflate(R.layout.comments_layout, parent, false)
 
         var textUserView = view.findViewById<TextView>(R.id.commentsUserName)
         var commentsView = view.findViewById<TextView>(R.id.commentsByUser)

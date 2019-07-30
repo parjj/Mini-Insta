@@ -50,12 +50,15 @@ class ImageViewAdapter(var context: Context, var images_urls: ArrayList<UploadIm
                 var bundle = Bundle()
                 var uri_value=images_urls.get(pos).uriString
                 var fileName=images_urls.get(pos).filename
+                var userName=images_urls.get(pos).username
                 bundle.putString("uri_image_value",uri_value)
                 bundle.putString("uri_image_fileName",fileName)
+                bundle.putString("uri_image_userName",userName)
+                bundle.putInt("image_pos",pos)
 
                 photoDetailFragment.arguments = bundle
                 fragmentTransaction.add(R.id.fragment_container, photoDetailFragment,PHOTO_DETAIL_TAG )
-                fragmentTransaction.addToBackStack(IMAGE_VIEW_ADAPTER_BACKSTACK)
+                fragmentTransaction.addToBackStack("image_gallery_tag")
                 fragmentTransaction.commit()
 
             })

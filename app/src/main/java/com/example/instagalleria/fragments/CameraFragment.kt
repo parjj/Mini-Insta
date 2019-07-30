@@ -4,11 +4,13 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v4.content.FileProvider
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -30,13 +32,10 @@ class CameraFragment : Fragment() {
     val REQUEST_IMAGE_CAPTURE: Int = 1
     val REQUEST_IMAGE_FROM_PHONE: Int = 2
 
-    val PHOTO_UPLOAD_TAG="photo_upload_tag"
-    val CAMERA_FRAGMENT_BACKSTACK="camer_fragment_backstack"
+    val PHOTO_UPLOAD_TAG = "photo_upload_tag"
+    val CAMERA_FRAGMENT_BACKSTACK = "camer_fragment_backstack"
 
-    private lateinit var take_photo: ImageButton
-    private lateinit var upload_photo: ImageButton
 //    private lateinit var progressBar: ProgressBar
-
 
     //file paths
     private lateinit var currentPhotoPath: String
@@ -48,21 +47,25 @@ class CameraFragment : Fragment() {
 
         var view = inflater.inflate(R.layout.camera_layout, container, false)
 
-        take_photo = view.findViewById(R.id.takePhoto)
-        upload_photo = view.findViewById(R.id.uploadPhoto)
+        var take_photo = view.findViewById<ImageButton>(R.id.takePhoto)
+        var upload_photo = view.findViewById<ImageButton>(R.id.uploadPhoto)
 
-     // progressBar = view.findViewById(R.id.progress_bar)
+        // progressBar = view.findViewById(R.id.progress_bar)
 
         var imageGallery = fragmentManager!!.fragments.get(3) as ImageGalleryViewFragment
 
-       // imageGallery.fragment_login.fragment_toolbar_top.toolbar_title.setText("Photo Detail")
+        imageGallery.fragment_login.fragment_toolbar_top.toolbar_title.setText("Photo Detail")
+        imageGallery.fragment_login.fragment_toolbar_bottom.toolbar_left.setImageResource(R.drawable.home_active_optimized)
+
+        imageGallery.fragment_login.fragment_toolbar_bottom.toolbar_right.setImageResource(R.drawable.icn_photo_inactive_optimized)
+
+        imageGallery.fragment_login.fragment_toolbar_bottom.toolbar_left.setOnClickListener(View.OnClickListener { l->
+
+            fragmentManager!!.popBackStack("toolbar_bottom_backStack", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        })
 
         //take photo button
-        take_photo.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                openPhoneCamera()
-            }
-        })
+        take_photo.setOnClickListener({ l -> openPhoneCamera() })
 
         //upload button
         upload_photo.setOnClickListener({ v -> openFile() })
@@ -82,11 +85,11 @@ class CameraFragment : Fragment() {
 
     //take photo button functions
     private fun openPhoneCamera() {
-
         photoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (photoIntent.resolveActivity(context!!.packageManager) != null) {
+        if (photoIntent.resolveActivity(this.context!!.packageManager) != null) {
             try {
-                getPhotoUri()
+                photoUri = getPhotoUri()
+
             } catch (exce: Exception) {
                 exce.printStackTrace()
             }
@@ -100,14 +103,14 @@ class CameraFragment : Fragment() {
             // intended to define it's value with this code in onLaunchCamera(): so hence using the getUri function and file provider
             startActivityForResult(photoIntent, REQUEST_IMAGE_CAPTURE)
         }
-
     }
+
 
     //file provider function for photoURi path
     fun getPhotoUri(): Uri {
         var photoFile: File? = null
 
-        val storageDir = context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        var storageDir = context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
         storageDir!!.mkdirs()
 
@@ -122,18 +125,17 @@ class CameraFragment : Fragment() {
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = photoFile.absolutePath
         if (photoFile != null) {
-            val photoURI = FileProvider.getUriForFile(
-                context!!,
+            var photoURI = FileProvider.getUriForFile(
+                this.context!!,
                 "com.example.instagalleria.fileprovider",
-                photoFile
-            )
-            this.photoUri = photoURI
+                photoFile)
+                this.photoUri = photoURI
         }
         return photoUri
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data);
 
 
@@ -146,8 +148,14 @@ class CameraFragment : Fragment() {
 
                 try {
 
-                    filePathUri = photoUri
-                    setImageView(filePathUri)
+                    val bmOptions = BitmapFactory.Options()
+                    val bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions)
+
+                    val f = File(currentPhotoPath)
+                    val contentUri = Uri.fromFile(f)
+                   // val imageBitmap = data.extras.get("data") as Uri
+                  //  filePathUri = data!!.extras.get("data") as Uri
+                    setImageView(contentUri)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -159,7 +167,7 @@ class CameraFragment : Fragment() {
                     filePathUri = data.data                                         //on single image select
                     setImageView(filePathUri)
 
-                } else if (data.getClipData() != null) {                            // on multiple image select
+                } else if (data!!.getClipData() != null) {                            // on multiple image select
                     var imageUrisList = ArrayList<Uri>()
 
                     var count = data.getClipData().getItemCount();
@@ -197,7 +205,7 @@ class CameraFragment : Fragment() {
         var transaction = fragmentManager!!.beginTransaction()
         var photoUploadFragment = PhotoUploadFragment()
         photoUploadFragment.arguments = bundle
-        transaction.add(R.id.fragment_container, photoUploadFragment,PHOTO_UPLOAD_TAG)
+        transaction.add(R.id.fragment_container, photoUploadFragment, PHOTO_UPLOAD_TAG)
         transaction.addToBackStack(CAMERA_FRAGMENT_BACKSTACK)
         transaction.commit()
     }

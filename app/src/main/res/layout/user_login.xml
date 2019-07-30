@@ -21,7 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:hint="user email or user name"
+            android:inputType="textEmailAddress"
+            android:hint="user email"
             android:layout_margin="10dp"
             android:background="@drawable/edit_text_style"
 

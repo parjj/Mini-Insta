@@ -17,10 +17,6 @@ import android.app.AlertDialog
 import android.util.Log
 import com.example.instagalleria.model.Constants.Companion.TAG
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.auth.FirebaseUser
-import com.google.android.gms.tasks.Task
-import android.support.annotation.NonNull
-import android.R.attr.password
 
 
 class LoginPageFragment : Fragment() {
@@ -32,8 +28,10 @@ class LoginPageFragment : Fragment() {
     private lateinit var login_button: Button
     private lateinit var new_user: Button
 
-    var fragment_toolbar_top =ToolbarTopFragment()
-    var fragment_toolbar_bottom =ToolbarBottomFragment()
+    lateinit var registered_display_name: String
+
+    var fragment_toolbar_top = ToolbarTopFragment()
+    var fragment_toolbar_bottom = ToolbarBottomFragment()
 
     lateinit var auth: FirebaseAuth
 
@@ -52,18 +50,14 @@ class LoginPageFragment : Fragment() {
         login_button = view.findViewById(R.id.loginB)
         new_user = view.findViewById(R.id.newUser)
 
+        //hide your toolbars
         toolbarHidden()
 
-        Log.d(TAG, fragment_toolbar_top.toString())
-        Log.d(TAG, fragment_toolbar_bottom.toString())
-
-
         //user already logged in or not check
-        getUserProfile()
+         getUserProfile()
 
         // login button click
         login_button.setOnClickListener(View.OnClickListener { v ->
-
 
             val email_val: String
             val password_val: String
@@ -76,8 +70,9 @@ class LoginPageFragment : Fragment() {
             if (TextUtils.isEmpty(password_val)) {
                 Toast.makeText(context, "Please enter password!", Toast.LENGTH_LONG).show();
             }
-            val user = auth.getCurrentUser()
 
+
+            // sign in call
             loginCall(email_val, password_val)
         })
 
@@ -102,10 +97,11 @@ class LoginPageFragment : Fragment() {
 
                 var email_val: String
                 var password_val: String
-                var user_name: String
+                var username_registered: String
+
                 email_val = txt_email.getText().toString()
                 password_val = txt_password.getText().toString()
-                user_name = profile_name.getText().toString()
+                username_registered = profile_name.getText().toString()
 
                 Log.d(TAG, "username" + email_val)
                 Log.d(TAG, "password" + password_val)
@@ -117,7 +113,7 @@ class LoginPageFragment : Fragment() {
                     Toast.makeText(context, "Please enter password!", Toast.LENGTH_LONG).show();
                 }
 
-                registerationCall(email_val, password_val, user_name)
+                registerationCall(email_val, password_val, username_registered)
                 alertDialog.dismiss()
 
             })
@@ -134,10 +130,13 @@ class LoginPageFragment : Fragment() {
             .addOnCompleteListener(OnCompleteListener<AuthResult> { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "Registration successful!")
-
                     // call for setting the desired display name
-                    authenticate(profileName)
-                    transactionCall(profileName)
+                    var str = authenticate(profileName)
+                    if (str != null) {
+                        transactionCall(str)
+                    }
+
+
                 } else {
                     Log.d(TAG, "Registration failed! Please try again later" + task.exception)
                 }
@@ -145,8 +144,9 @@ class LoginPageFragment : Fragment() {
     }
 
     // set the diaply name
-    fun authenticate(desiredName: String) {
+    fun authenticate(desiredName: String): String? {
         Log.d(TAG, "setting the  displayname" + desiredName)
+        var profileName: String? = null
         val user = FirebaseAuth.getInstance().currentUser
 
         if (user != null) {
@@ -155,13 +155,17 @@ class LoginPageFragment : Fragment() {
                 .setDisplayName(desiredName)
                 .build()
 
+
+            profileName = profileUpdates.displayName.toString()
             user.updateProfile(profileUpdates)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d(TAG, "User display name updated.")
+
                     }
                 }
         }
+        return profileName
     }
 
 
@@ -173,9 +177,12 @@ class LoginPageFragment : Fragment() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithEmail:success")
-                    val user = auth.getCurrentUser()
-                    Log.d(TAG, "inside login method call check for displayname" + user)
-                    transactionCall(user.toString())
+        val user = auth.getCurrentUser()
+        if (user != null) {
+            registered_display_name = user.displayName.toString()
+        }
+                    Log.d(TAG, "inside login method call check for displayname" + registered_display_name)
+        transactionCall(registered_display_name)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
@@ -195,7 +202,7 @@ class LoginPageFragment : Fragment() {
 
         imageGalleryViewFragment.arguments = bundle
         fragmentTransaction.add(R.id.fragment_container, imageGalleryViewFragment, IMAGE_GALLERY_TAG)
-        //fragmentTransaction.addToBackStack(LOGIN_PAGE_BACKSTACK)
+       // fragmentTransaction.addToBackStack(LOGIN_PAGE_BACKSTACK)
         fragmentTransaction.commit()
 
     }
@@ -206,15 +213,29 @@ class LoginPageFragment : Fragment() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
             // Name, email address, and profile photo Url
-            var name = currentUser.getDisplayName();
+            var name = currentUser.displayName
             Log.d(TAG, "on start method check for displayname" + name)
             if (name != null) {
                 transactionCall(name)
             }
 
         }
-
     }
+
+//    override fun onStart() {
+//        super.onStart()
+//
+//        // Check if user is signed in (non-null) and update UI accordingly.
+//        val currentUser = auth.getCurrentUser()
+//        if (currentUser != null) {
+//            // Name, email address, and profile photo Url
+//            var name = currentUser.displayName
+//            Log.d(TAG, "on start method check for displayname" + name)
+//            if (name != null) {
+//                transactionCall(name)
+//            }
+//        }
+//    }
 
     // toolbar hidden function
     fun toolbarHidden() {
@@ -225,16 +246,16 @@ class LoginPageFragment : Fragment() {
     }
 
     //toolbar show
-    fun toolbarShow(){
+    fun toolbarShow() {
 
-        if ((!(fragment_toolbar_top!!.isVisible)) && (!(fragment_toolbar_bottom!!.isVisible)) ){
+        if ((!(fragment_toolbar_top!!.isVisible)) && (!(fragment_toolbar_bottom!!.isVisible))) {
             fragment_toolbar_top!!.view!!.visibility = View.VISIBLE
             fragment_toolbar_bottom!!.view!!.visibility = View.VISIBLE
 
         }
     }
+
+
 }
-
-
 //---------------------------------------------------------------------------------------------------------
 

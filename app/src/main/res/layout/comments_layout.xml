@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="wrap_content"
+                                             android:background="@android:color/white"
+                                                android:id="@+id/constraintLayout_comments"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <LinearLayout
+            android:id="@+id/ll_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/rectangle_with_circular_border"
+            android:orientation="vertical"
+            android:padding="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+                android:hint="comment section"
+                android:id="@+id/commentsByUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+        />
+
+    </LinearLayout>
+    <TextView
+            android:id="@+id/commentsUserName"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="32dp"
+            android:background="@android:color/white"
+            android:hint="username"
+            android:paddingLeft="5dp"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginLeft="32dp"
+/>
+</android.support.constraint.ConstraintLayout>

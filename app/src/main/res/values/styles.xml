@@ -33,5 +33,8 @@
         <item name="android:background">@drawable/edit_text_style</item>
     </style>
 
+    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">#ffe6e6</item>
+    </style>
 
 </resources>

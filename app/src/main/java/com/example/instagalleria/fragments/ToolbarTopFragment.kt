@@ -2,6 +2,7 @@ package com.example.instagalleria.fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -39,7 +40,16 @@ class ToolbarTopFragment() :Fragment(){
 
         toolbar_back.setOnClickListener(View.OnClickListener { l->
 
-            fragmentManager!!.popBackStack()
+            var fm=fragmentManager!!.fragments.get(1) as ToolbarBottomFragment
+            fm.toolbar_left.setImageResource(R.drawable.home_inactive_optimized)
+            fm.toolbar_right.setImageResource(R.drawable.icn_photo_active_optimized)
+
+            fragmentManager!!.popBackStack("imageViewAdapter_backStack",1)
+
+
+            toolbar_title.setText("Insta Gallery")
+            toolbar_back.visibility = View.GONE
+
         })
 
 
@@ -47,10 +57,17 @@ class ToolbarTopFragment() :Fragment(){
         toolbar_top.setOnMenuItemClickListener {
 
             FirebaseAuth.getInstance().signOut()
-            fragmentManager!!.popBackStackImmediate()
+           // this.activity!!.finish()
+           // login_tag
 
+            var fr= activity!!.supportFragmentManager.fragments.get(2)
 
+               fragmentManager!!.beginTransaction().add(R.id.fragment_container
+               ,fr).commit()
+
+            true
         }
+
         return view
     }
 }

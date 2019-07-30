@@ -132,15 +132,16 @@ class PhotoUploadFragment : Fragment() {
                     var downloadUrl = urlTask.getResult();
 
 
-                    var user = imageGallery.userName
+                    var user = imageGallery.user_displayName
                     hashMap.put("USER", user)
                     hashMap.put("NAME", name)
                     hashMap.put("URI", downloadUrl.toString())
 
-                    var uploadImage = UploadImage(name as String, downloadUrl.toString() as String)
+                    var uploadImage = UploadImage(name , downloadUrl.toString(),user)
                     imageGallery.uploadList.add(uploadImage)
                     imageGallery.refresh()
 
+                    //upload to cloud db
                     dbStorage(name)
 
                 })
@@ -161,16 +162,16 @@ class PhotoUploadFragment : Fragment() {
 
     }
 
-    //cloud db storage
-    fun dbStorage(string: String) {
+    //upload to cloud db storage
+    fun dbStorage(name: String) {
 
         //If the document does not exist, it will be created. If the document does exist,
         // its contents will be overwritten with the newly provided data,
         // unless you specify that the data should be merged into the existing document,
 
-        var docRef = Constants.db_storageRef.document(string.substring(0, 6))
+        var docRef = Constants.db_storageRef.document(name.substring(0, 6))
 
-        docRef.set(hashMap, SetOptions.merge())
+        docRef.set(hashMap)
             .addOnSuccessListener {
                 OnSuccessListener<Void> {
                     Log.d(

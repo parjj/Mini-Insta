@@ -27,7 +27,7 @@ class ImageGalleryViewFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
 
-    lateinit var userName: String
+    lateinit var user_displayName: String
 
     var uploadList = ArrayList<UploadImage>()
     lateinit var adapter: ImageViewAdapter
@@ -43,7 +43,7 @@ class ImageGalleryViewFragment : Fragment() {
 
         var bundle = arguments
 
-        userName = bundle!!.getString("profile_user")
+        user_displayName = bundle!!.getString("profile_user")
 
         // recycler view functions
         recyclerView = view.findViewById(R.id.recyclerView)
@@ -65,10 +65,16 @@ class ImageGalleryViewFragment : Fragment() {
 
 
         }
+//
+//        fragment_login.fragment_toolbar_top.toolbar_title.setText(getString(R.string.app_name))
+//        fragment_login.fragment_toolbar_top.toolbar_back.visibility = View.GONE
 
-        fragment_login.fragment_toolbar_top.toolbar_title.setText("Insta Gallery")
-        fragment_login.fragment_toolbar_top.toolbar_back.visibility=View.GONE
-
+//        fragment_login.fragment_toolbar_top.toolbar_title.setText("Insta Gallery")
+//        fragment_login.fragment_toolbar_top.toolbar_back.visibility=View.GONE
+//
+//        fragment_login.fragment_toolbar_bottom.toolbar_left.setImageResource(R.drawable.home_inactive_optimized)
+//        fragment_login.fragment_toolbar_bottom.toolbar_right.setImageResource(R.drawable.icn_photo_active_optimized)
+//
 
         return view
     }
@@ -89,29 +95,13 @@ class ImageGalleryViewFragment : Fragment() {
 
                     var img_name = nameString.get("NAME")
                     var img_uri = nameString.get("URI")
+                    var profile_user = nameString.get("USER")
 
-                    if (nameString.containsKey("LIKES")) {
-
-                        var l = nameString.get("LIKES")
-                        if (l is String) {
-
-                            var num = l.toLong()
-                            if (num <= 0) {
-
-                                Log.d(TAG, " count value " + num)
-                            }
-                        }
-
-                    }
-
-                    val uploadImage = UploadImage(img_name as String, img_uri as String)
+                    val uploadImage = UploadImage(img_name as String, img_uri as String, profile_user as String)
                     uploadList.add(uploadImage)
-                    Log.d(TAG, "getAllDocumentsFromDB....Added " + uploadList.size);
 
-                    Log.d(TAG, "${document.id} => ${document.data}")
+                    Log.d(TAG, "The whole set of docs=   ${document.data}")
                 }
-
-                Log.d(TAG, "getAllDocumentsFromDB....Upload Count :" + uploadList.size);
                 adapter.notifyDataSetChanged()   // this function call runs on its own thread
 
             }
