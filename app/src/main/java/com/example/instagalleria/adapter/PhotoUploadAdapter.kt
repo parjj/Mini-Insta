@@ -41,16 +41,10 @@ class PhotoUploadAdapter() : BaseAdapter() {
 
         var imageView = view.findViewById(R.id.photo_images) as ImageView
 
-
         imageView.setImageURI(image_list.get(position))
 
-
-//        uploadImage.uri
-//        imageView.setImageBitmap()
-         //Glide.with(contex).load(image_list.get(position)).into(imageView);
         return view
     }
-
 
 }
 

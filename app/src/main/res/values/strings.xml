@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">InstaGalleria</string>
     <string name="back">&lt;BACK</string>
+    <string name="account_login">Account Login</string>
+    <string name="user_email">user email</string>
+    <string name="password">password</string>
+    <string name="login">Login</string>
+    <string name="new_user">New User</string>
+    <string name="upload">upload</string>
+    <string name="upload_photo">Upload Photo</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="comment_section">comment section</string>
+    <string name="username">username</string>
+    <string name="empty"></string>
 </resources>

@@ -19,23 +19,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.bumptech.glide.Glide
+import com.example.instagalleria.MainActivity
 import com.example.instagalleria.R
 import com.example.instagalleria.model.Constants.Companion.TAG
+import com.example.instagalleria.model.OnBackPressed
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.lang.Exception
 import kotlin.collections.ArrayList
 
-class CameraFragment : Fragment() {
+class CameraFragment : Fragment(), OnBackPressed {
+
 
     val REQUEST_IMAGE_CAPTURE: Int = 1
     val REQUEST_IMAGE_FROM_PHONE: Int = 2
 
     val PHOTO_UPLOAD_TAG = "photo_upload_tag"
     val CAMERA_FRAGMENT_BACKSTACK = "camer_fragment_backstack"
-
-//    private lateinit var progressBar: ProgressBar
 
     //file paths
     private lateinit var currentPhotoPath: String
@@ -49,20 +50,6 @@ class CameraFragment : Fragment() {
 
         var take_photo = view.findViewById<ImageButton>(R.id.takePhoto)
         var upload_photo = view.findViewById<ImageButton>(R.id.uploadPhoto)
-
-        // progressBar = view.findViewById(R.id.progress_bar)
-
-        var imageGallery = fragmentManager!!.fragments.get(3) as ImageGalleryViewFragment
-
-        imageGallery.fragment_login.fragment_toolbar_top.toolbar_title.setText("Photo Detail")
-        imageGallery.fragment_login.fragment_toolbar_bottom.toolbar_left.setImageResource(R.drawable.home_active_optimized)
-
-        imageGallery.fragment_login.fragment_toolbar_bottom.toolbar_right.setImageResource(R.drawable.icn_photo_inactive_optimized)
-
-        imageGallery.fragment_login.fragment_toolbar_bottom.toolbar_left.setOnClickListener(View.OnClickListener { l->
-
-            fragmentManager!!.popBackStack("toolbar_bottom_backStack", FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        })
 
         //take photo button
         take_photo.setOnClickListener({ l -> openPhoneCamera() })
@@ -128,8 +115,9 @@ class CameraFragment : Fragment() {
             var photoURI = FileProvider.getUriForFile(
                 this.context!!,
                 "com.example.instagalleria.fileprovider",
-                photoFile)
-                this.photoUri = photoURI
+                photoFile
+            )
+            this.photoUri = photoURI
         }
         return photoUri
     }
@@ -137,8 +125,6 @@ class CameraFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
         // Check which request we're responding to
         if (requestCode == REQUEST_IMAGE_CAPTURE) {                                 // on take photo button click
             // Make sure the request was successful
@@ -147,14 +133,8 @@ class CameraFragment : Fragment() {
                 // The Intent's data Uri identifies which contact was selected.
 
                 try {
-
-                    val bmOptions = BitmapFactory.Options()
-                    val bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions)
-
                     val f = File(currentPhotoPath)
                     val contentUri = Uri.fromFile(f)
-                   // val imageBitmap = data.extras.get("data") as Uri
-                  //  filePathUri = data!!.extras.get("data") as Uri
                     setImageView(contentUri)
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -184,10 +164,7 @@ class CameraFragment : Fragment() {
     //image view for the selected single photo
     fun setImageView(uri: Uri) {
         var bundle = Bundle()
-
-        //  bundle.putParcelable("bitmap",bitmap)
         bundle.putString("uri_string", uri.toString())
-        // bundle.putString("photo_path", str)
         callPhotoLibrary(bundle)
     }
 
@@ -210,6 +187,13 @@ class CameraFragment : Fragment() {
         transaction.commit()
     }
 
+    override fun OnBackPressed() {
+
+        val activity = activity as MainActivity
+
+        activity.fragment_toolbar_bottom.backFromcameraFragtoPhotoDetail()
+        fragmentManager!!.popBackStack()
+//
+    }
 
 }
-

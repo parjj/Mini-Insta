@@ -14,8 +14,8 @@ import java.util.ArrayList
 
 class PhotoCommentsAdapter(var commentsList: ArrayList<CommentsData>) :
     RecyclerView.Adapter<PhotoCommentsAdapter.PhotoCommentViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoCommentViewHolder {
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoCommentViewHolder {
 
         var view = LayoutInflater.from(parent.context).inflate(R.layout.comments_layout, parent, false)
 
@@ -32,18 +32,8 @@ class PhotoCommentsAdapter(var commentsList: ArrayList<CommentsData>) :
 
         var commentsData = commentsList.get(pos)
 
-        // addData(pos,commentsData)
-
         photoCommentViewHolder.textUserView.setText(commentsData.username)
         photoCommentViewHolder.commentsView.setText(commentsData.comments)
-
-
-    }
-
-
-    fun addData(i: Int, data: CommentsData) {
-
-
     }
 
      class PhotoCommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

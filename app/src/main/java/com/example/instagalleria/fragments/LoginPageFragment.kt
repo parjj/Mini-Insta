@@ -15,24 +15,23 @@ import com.google.firebase.auth.AuthResult
 import com.google.android.gms.tasks.OnCompleteListener
 import android.app.AlertDialog
 import android.util.Log
+import com.example.instagalleria.MainActivity
 import com.example.instagalleria.model.Constants.Companion.TAG
+import com.example.instagalleria.model.OnBackPressed
 import com.google.firebase.auth.UserProfileChangeRequest
 
 
-class LoginPageFragment : Fragment() {
+class LoginPageFragment : Fragment() ,OnBackPressed{
 
-    private val LOGIN_PAGE_BACKSTACK = "login_page_backstack"
     val IMAGE_GALLERY_TAG = "image_gallery_tag"
     private lateinit var email: EditText
     private lateinit var password: EditText
     private lateinit var login_button: Button
     private lateinit var new_user: Button
 
+    lateinit var bundle : Bundle
+
     lateinit var registered_display_name: String
-
-    var fragment_toolbar_top = ToolbarTopFragment()
-    var fragment_toolbar_bottom = ToolbarBottomFragment()
-
     lateinit var auth: FirebaseAuth
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,10 +39,6 @@ class LoginPageFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
 
         var view: View = inflater.inflate(R.layout.user_login, container, false)
-
-        fragment_toolbar_top = fragmentManager!!.findFragmentByTag("toolbar_top_tag") as ToolbarTopFragment
-        fragment_toolbar_bottom = fragmentManager!!.findFragmentByTag("toolbar_bottom_tag") as ToolbarBottomFragment
-
 
         email = view.findViewById(R.id.username)
         password = view.findViewById(R.id.password)
@@ -70,7 +65,6 @@ class LoginPageFragment : Fragment() {
             if (TextUtils.isEmpty(password_val)) {
                 Toast.makeText(context, "Please enter password!", Toast.LENGTH_LONG).show();
             }
-
 
             // sign in call
             loginCall(email_val, password_val)
@@ -135,8 +129,6 @@ class LoginPageFragment : Fragment() {
                     if (str != null) {
                         transactionCall(str)
                     }
-
-
                 } else {
                     Log.d(TAG, "Registration failed! Please try again later" + task.exception)
                 }
@@ -154,7 +146,6 @@ class LoginPageFragment : Fragment() {
             val profileUpdates = UserProfileChangeRequest.Builder()
                 .setDisplayName(desiredName)
                 .build()
-
 
             profileName = profileUpdates.displayName.toString()
             user.updateProfile(profileUpdates)
@@ -187,22 +178,19 @@ class LoginPageFragment : Fragment() {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
                 }
-
-                // ...
             })
-
     }
 
     //to image gallery view
     fun transactionCall(username: String) {
-        var bundle = Bundle()
+
+        bundle = Bundle()
         bundle.putString("profile_user", username)
         var fragmentTransaction = fragmentManager!!.beginTransaction()   // why do we add this
         var imageGalleryViewFragment = ImageGalleryViewFragment()
 
         imageGalleryViewFragment.arguments = bundle
         fragmentTransaction.add(R.id.fragment_container, imageGalleryViewFragment, IMAGE_GALLERY_TAG)
-       // fragmentTransaction.addToBackStack(LOGIN_PAGE_BACKSTACK)
         fragmentTransaction.commit()
 
     }
@@ -218,44 +206,22 @@ class LoginPageFragment : Fragment() {
             if (name != null) {
                 transactionCall(name)
             }
-
         }
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        val currentUser = auth.getCurrentUser()
-//        if (currentUser != null) {
-//            // Name, email address, and profile photo Url
-//            var name = currentUser.displayName
-//            Log.d(TAG, "on start method check for displayname" + name)
-//            if (name != null) {
-//                transactionCall(name)
-//            }
-//        }
-//    }
 
     // toolbar hidden function
     fun toolbarHidden() {
-        if ((!(fragment_toolbar_top!!.isHidden)) && (!(fragment_toolbar_bottom!!.isHidden))) {
-            fragment_toolbar_top!!.view!!.visibility = View.GONE
-            fragment_toolbar_bottom!!.view!!.visibility = View.GONE
-        }
+
+        val activity = activity as MainActivity
+
+        activity.fragment_toolbar_top.view?.visibility = View.GONE
+        activity.fragment_toolbar_bottom.view?.visibility = View.GONE
+
     }
 
-    //toolbar show
-    fun toolbarShow() {
-
-        if ((!(fragment_toolbar_top!!.isVisible)) && (!(fragment_toolbar_bottom!!.isVisible))) {
-            fragment_toolbar_top!!.view!!.visibility = View.VISIBLE
-            fragment_toolbar_bottom!!.view!!.visibility = View.VISIBLE
-
-        }
+    override fun OnBackPressed() {
+            activity!!.finish()
     }
-
-
 }
-//---------------------------------------------------------------------------------------------------------
 

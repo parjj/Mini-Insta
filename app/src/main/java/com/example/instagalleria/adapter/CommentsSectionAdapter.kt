@@ -21,9 +21,6 @@ class CommentsSectionAdapter() : BaseAdapter() {
     lateinit var context: Context
     lateinit var username: String
 
-    lateinit var userList: ArrayList<String>
-    lateinit var userCommentsList :ArrayList<String>
-
     lateinit var commentsList: ArrayList<CommentsData>
 
     constructor(context: Context,commentsList: ArrayList<CommentsData>) : this() {
@@ -43,10 +40,8 @@ class CommentsSectionAdapter() : BaseAdapter() {
         var textUserView = view.findViewById<TextView>(R.id.commentsUserName)
         var commentsView = view.findViewById<TextView>(R.id.commentsByUser)
 
-
         textUserView.text = data.username
         commentsView.text=data.comments
-
 
         return view
     }
@@ -57,12 +52,11 @@ class CommentsSectionAdapter() : BaseAdapter() {
     }
 
     override fun getItemId(position: Int): Long {
-        return  0
+        return  position.toLong()
     }
 
     override fun getCount(): Int {
       return  commentsList.size
     }
-
 
 }

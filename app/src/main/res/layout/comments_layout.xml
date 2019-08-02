@@ -4,6 +4,7 @@
                                              android:layout_height="wrap_content"
                                              android:background="@android:color/white"
                                                 android:id="@+id/constraintLayout_comments"
+                                             android:layout_margin="15dp"
                                              xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
@@ -23,12 +24,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-                android:hint="comment section"
+                android:hint="@string/comment_section"
                 android:id="@+id/commentsByUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-        />
+                android:textColor="#444444"/>
 
     </LinearLayout>
     <TextView
@@ -37,14 +37,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="16dp"
             android:background="@android:color/white"
-            android:hint="username"
+            android:hint="@string/username"
             android:paddingLeft="5dp"
-            android:textSize="16dp"
+            android:paddingRight="2dp"
+            android:paddingEnd="2dp"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" android:layout_marginLeft="32dp"
-/>
+            android:paddingStart="5dp"/>
 </android.support.constraint.ConstraintLayout>

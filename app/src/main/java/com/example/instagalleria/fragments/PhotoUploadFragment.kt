@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.example.instagalleria.MainActivity
 import com.example.instagalleria.R
 import com.example.instagalleria.adapter.PhotoUploadAdapter
 import com.example.instagalleria.model.Constants
@@ -21,6 +22,7 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.storage.OnProgressListener
 import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.UploadTask
 import java.lang.Exception
@@ -35,7 +37,6 @@ class PhotoUploadFragment : Fragment() {
     lateinit var upload_button: Button
 
     private lateinit var camera_photo: ImageView
-    // private lateinit var progressBar: ProgressBar
     private var photos_list: ArrayList<Uri>? = null
 
     private lateinit var uri_value: Uri
@@ -46,8 +47,6 @@ class PhotoUploadFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         var view = inflater.inflate(R.layout.photo_library, container, false)
-
-        //  progressBar = view.findViewById(R.id.progress_bar)
 
         var bundle = arguments!!
         var str = bundle.getString("uri_string")
@@ -62,9 +61,6 @@ class PhotoUploadFragment : Fragment() {
         if (str != null) {
             uri_value = Uri.parse(str)
             if (uri_value != null) {
-
-                var cr = this.context?.contentResolver
-                val imgBitmap = MediaStore.Images.Media.getBitmap(cr, uri_value)
                 camera_photo.visibility = View.VISIBLE
                 camera_photo.setImageURI(uri_value)  // setting the image view
             }
@@ -81,8 +77,6 @@ class PhotoUploadFragment : Fragment() {
         //upload button click
         upload_button.setOnClickListener(View.OnClickListener { l ->
 
-            Toast.makeText(context,"Upload button clicked",Toast.LENGTH_SHORT).show()
-
             if (photos_list != null) {
                 for (photoUri in photos_list!!) {
                     upload(photoUri)
@@ -91,18 +85,17 @@ class PhotoUploadFragment : Fragment() {
                 upload(uri_value)
             }
 
-         fragmentManager!!.popBackStack("toolbar_bottom_backStack", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            val activity = activity as MainActivity
+
+            activity.fragment_toolbar_bottom.backandOnFromUpload()
+            fragmentManager!!.popBackStack("toolbar_bottom_backStack", FragmentManager.POP_BACK_STACK_INCLUSIVE)
         })
-
         return view;
-
     }
 
 
     //upload to firebase
-     fun upload(filePathUri: Uri) {
-        //  progressBar.visibility = View.VISIBLE
-
+    fun upload(filePathUri: Uri) {
         if (filePathUri != null) {
 
             // Create file metadata including the content type
@@ -125,7 +118,6 @@ class PhotoUploadFragment : Fragment() {
                         "successfull in uploading to FB storage "
                     )
 
-
                     var name = taskSnapshot.storage.name
                     var urlTask: Task<Uri> = taskSnapshot.getStorage().getDownloadUrl();
                     while (!urlTask.isSuccessful());
@@ -137,7 +129,7 @@ class PhotoUploadFragment : Fragment() {
                     hashMap.put("NAME", name)
                     hashMap.put("URI", downloadUrl.toString())
 
-                    var uploadImage = UploadImage(name , downloadUrl.toString(),user)
+                    var uploadImage = UploadImage(name, downloadUrl.toString(), user)
                     imageGallery.uploadList.add(uploadImage)
                     imageGallery.refresh()
 
@@ -151,13 +143,6 @@ class PhotoUploadFragment : Fragment() {
                         "Failed upload to FB storage "
                     )
                 })
-//                .addOnProgressListener(OnProgressListener<UploadTask.TaskSnapshot> { task ->
-//
-//                    var progress = (100.0 * task.getBytesTransferred()) / task.getTotalByteCount();
-//                    progressBar.progress = progress.toInt()
-//                    //Toast.makeText(context, "Upload is $progress% done",Toast.LENGTH_SHORT).show()
-//                })
-
         }
 
     }
@@ -178,8 +163,6 @@ class PhotoUploadFragment : Fragment() {
                         Constants.TAG,
                         "Uploaded to cloud db successfully"
                     )
-
-
                 }
             }
             .addOnFailureListener(OnFailureListener { exception: Exception ->
@@ -188,8 +171,5 @@ class PhotoUploadFragment : Fragment() {
                     "failure to upload to cloud db"
                 )
             })
-
-
     }
-
 }

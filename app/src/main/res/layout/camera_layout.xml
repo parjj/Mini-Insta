@@ -9,8 +9,7 @@
         android:layout_weight="4"
         android:background="#ffffff"
         android:clickable="true"
-        tools:context=".MainActivity">
-
+        tools:context=".MainActivity" android:focusable="true">
 
 
     <FrameLayout
@@ -20,7 +19,7 @@
             android:layout_height="match_parent"
             android:backgroundTint="@android:color/black"
             android:visibility="visible"
-    >
+            tools:targetApi="lollipop">
 
         <ImageButton
                 android:id="@+id/takePhoto"
@@ -30,15 +29,14 @@
                 android:textAlignment="center"
                 android:layout_margin="1dp"
                 android:backgroundTint="#ffe5e5"
-
-        />
+                tools:targetApi="lollipop"/>
 
         <TextView
 
                 android:id="@+id/phototext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Take Photo"
+                android:text="@string/take_photo"
                 android:textSize="18sp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="80dp"
@@ -60,15 +58,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/uploadphoto"
-                android:layout_weight="2"
                 android:backgroundTint="#ffe5f2"
                 android:layout_margin="1dp"
-        />
+                tools:targetApi="lollipop"/>
         <TextView
                 android:id="@+id/uploadtext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Upload Photo"
+                android:text="@string/upload_photo"
                 android:textSize="18sp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="80dp"
@@ -78,9 +75,9 @@
     </FrameLayout>
 
     <include layout="@layout/progress_bar"
-            android:id="@+id/pbLoading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+             android:id="@+id/pbLoading"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
     />
 
 </LinearLayout>

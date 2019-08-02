@@ -26,14 +26,10 @@ class ImageGalleryViewFragment : Fragment() {
 
 
     private lateinit var recyclerView: RecyclerView
-
     lateinit var user_displayName: String
-
     var uploadList = ArrayList<UploadImage>()
     lateinit var adapter: ImageViewAdapter
-
     lateinit var fragment_login: LoginPageFragment
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -55,30 +51,18 @@ class ImageGalleryViewFragment : Fragment() {
         recyclerView.adapter = adapter
 
 
-        fragment_login = fragmentManager!!.fragments.get(2) as LoginPageFragment
 
+        val activity = activity as MainActivity
 
-
-        if ((!(fragment_login.fragment_toolbar_top!!.isVisible)) && (!(fragment_login.fragment_toolbar_bottom!!.isVisible)) ){
-            fragment_login.fragment_toolbar_top!!.view!!.visibility = View.VISIBLE
-            fragment_login.fragment_toolbar_bottom!!.view!!.visibility = View.VISIBLE
-
-
-        }
-//
-//        fragment_login.fragment_toolbar_top.toolbar_title.setText(getString(R.string.app_name))
-//        fragment_login.fragment_toolbar_top.toolbar_back.visibility = View.GONE
-
-//        fragment_login.fragment_toolbar_top.toolbar_title.setText("Insta Gallery")
-//        fragment_login.fragment_toolbar_top.toolbar_back.visibility=View.GONE
-//
-//        fragment_login.fragment_toolbar_bottom.toolbar_left.setImageResource(R.drawable.home_inactive_optimized)
-//        fragment_login.fragment_toolbar_bottom.toolbar_right.setImageResource(R.drawable.icn_photo_active_optimized)
-//
+        activity.fragment_toolbar_top.view?.visibility = View.VISIBLE
+        activity.fragment_toolbar_bottom.view?.visibility = View.VISIBLE
 
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
 
     // retrieve from database collection cloud storage
     fun getAllDocumentsFromDB() {
@@ -88,8 +72,6 @@ class ImageGalleryViewFragment : Fragment() {
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-
-                    Log.d(TAG, "document names" + "" + "" + document.toString())
 
                     var nameString = document.data
 
@@ -108,9 +90,7 @@ class ImageGalleryViewFragment : Fragment() {
             .addOnFailureListener { exception ->
                 Log.d(TAG, "Error getting documents: ", exception)
             }
-
         Log.d(TAG, "getAllDocumentsFromDB....Ended");
-
     }
 
     fun refresh() {
@@ -119,6 +99,3 @@ class ImageGalleryViewFragment : Fragment() {
         }
     }
 }
-
-// issues on back from photo detail the frag to image gallery the toolbar top remains the same shows photo detail and back button
-// list view not scrolling do i need to change

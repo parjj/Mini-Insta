@@ -43,14 +43,7 @@
                  android:padding="1dp"
     >
 
-        <fragment
-                class="com.example.instagalleria.fragments.LoginPageFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/mainFragment"
-                android:tag="login_tag"
-                app:layout_constraintTop_toBottomOf="@id/tooltop"
-        />
+
     </FrameLayout>
 
 
