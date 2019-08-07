@@ -65,7 +65,4 @@ class ToolbarTopFragment() : Fragment() {
 
     }
 
-    fun goBackFromCamera(){
-
-    }
 }

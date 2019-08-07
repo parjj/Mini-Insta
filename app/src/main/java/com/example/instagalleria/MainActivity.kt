@@ -14,15 +14,16 @@ import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var fragment_toolbar_top : ToolbarTopFragment
-    lateinit var fragment_toolbar_bottom : ToolbarBottomFragment
+    lateinit var fragment_toolbar_top: ToolbarTopFragment
+    lateinit var fragment_toolbar_bottom: ToolbarBottomFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         fragment_toolbar_top = supportFragmentManager!!.findFragmentByTag("toolbar_top_tag") as ToolbarTopFragment
-        fragment_toolbar_bottom = supportFragmentManager!!.findFragmentByTag("toolbar_bottom_tag") as ToolbarBottomFragment
+        fragment_toolbar_bottom =
+            supportFragmentManager!!.findFragmentByTag("toolbar_bottom_tag") as ToolbarBottomFragment
 
         var fragmentTransaction = supportFragmentManager!!.beginTransaction()   // why do we add this
         var loginPageFragment = LoginPageFragment()
@@ -31,30 +32,17 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
 
-//    override fun onBackPressed() {
-//
-//        var list = supportFragmentManager.fragments
-//        var i =supportFragmentManager.fragments.size
-//        if(i <= list.size) {
-//            if (supportFragmentManager.fragments.get(5) is CameraFragment) {
-//                var cf = supportFragmentManager.fragments.get(5)
-//                if (list.contains(cf as CameraFragment)) {
-//
-//                    cf.OnBackPressed()
-//                }
-//            } else if (supportFragmentManager.fragments.get(5) is PhotoDetailFragment) {
-//                var cf = supportFragmentManager.fragments.get(5)
-//                if (list.contains(cf as PhotoDetailFragment)) {
-//                    cf.OnBackPressed()
-//                }
-//            }
-//        }else{
-//            this.finish()
-//        }
-//    }
-override fun onBackPressed() {
-
-}
+        for(fragment in supportFragmentManager.fragments){
+            if(fragment is CameraFragment){
+                var cameraFragment = fragment as CameraFragment
+                cameraFragment.OnBackPressed()
+            }else if (fragment is PhotoDetailFragment){
+                var photoDetailFragment = fragment as PhotoDetailFragment
+                photoDetailFragment.OnBackPressed()
+            }
+        }
+    }
 
 }

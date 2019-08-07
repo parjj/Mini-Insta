@@ -58,7 +58,6 @@ class CameraFragment : Fragment(), OnBackPressed {
         upload_photo.setOnClickListener({ v -> openFile() })
 
         return view
-
     }
 
     //upload button functions
@@ -92,7 +91,6 @@ class CameraFragment : Fragment(), OnBackPressed {
         }
     }
 
-
     //file provider function for photoURi path
     fun getPhotoUri(): Uri {
         var photoFile: File? = null
@@ -121,7 +119,6 @@ class CameraFragment : Fragment(), OnBackPressed {
         }
         return photoUri
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -190,10 +187,13 @@ class CameraFragment : Fragment(), OnBackPressed {
     override fun OnBackPressed() {
 
         val activity = activity as MainActivity
-
         activity.fragment_toolbar_bottom.backFromcameraFragtoPhotoDetail()
-        fragmentManager!!.popBackStack()
-//
-    }
+        var fragmentTransaction = activity!!.supportFragmentManager.beginTransaction()
+        var ImageGalleryViewFragment = ImageGalleryViewFragment()
+        var fragment_login = fragmentManager!!.fragments.get(2) as LoginPageFragment
+        ImageGalleryViewFragment.arguments = fragment_login.bundle
+        fragmentTransaction.add(R.id.fragment_container, ImageGalleryViewFragment, null)
+        fragmentTransaction.commit()
 
+    }
 }

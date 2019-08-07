@@ -14,14 +14,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.AuthResult
 import com.google.android.gms.tasks.OnCompleteListener
 import android.app.AlertDialog
+import android.content.Context
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import com.example.instagalleria.MainActivity
 import com.example.instagalleria.model.Constants.Companion.TAG
 import com.example.instagalleria.model.OnBackPressed
 import com.google.firebase.auth.UserProfileChangeRequest
 
 
-class LoginPageFragment : Fragment() ,OnBackPressed{
+class LoginPageFragment : Fragment(), OnBackPressed {
 
     val IMAGE_GALLERY_TAG = "image_gallery_tag"
     private lateinit var email: EditText
@@ -29,7 +31,7 @@ class LoginPageFragment : Fragment() ,OnBackPressed{
     private lateinit var login_button: Button
     private lateinit var new_user: Button
 
-    lateinit var bundle : Bundle
+    lateinit var bundle: Bundle
 
     lateinit var registered_display_name: String
     lateinit var auth: FirebaseAuth
@@ -49,7 +51,10 @@ class LoginPageFragment : Fragment() ,OnBackPressed{
         toolbarHidden()
 
         //user already logged in or not check
-         getUserProfile()
+        getUserProfile()
+
+//        val ipmm = this.activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+//        ipmm!!.hideSoftInputFromWindow(post_comment.getWindowToken(), 0)
 
         // login button click
         login_button.setOnClickListener(View.OnClickListener { v ->
@@ -168,22 +173,22 @@ class LoginPageFragment : Fragment() ,OnBackPressed{
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithEmail:success")
-        val user = auth.getCurrentUser()
-        if (user != null) {
-            registered_display_name = user.displayName.toString()
-        }
-                    Log.d(TAG, "inside login method call check for displayname" + registered_display_name)
-        transactionCall(registered_display_name)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    val user = auth.getCurrentUser()
+                    if (user != null) {
+                        var username = user.displayName.toString()
+                        transactionCall(username)
+
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    }
                 }
             })
     }
 
     //to image gallery view
     fun transactionCall(username: String) {
-
+        registered_display_name = username
         bundle = Bundle()
         bundle.putString("profile_user", username)
         var fragmentTransaction = fragmentManager!!.beginTransaction()   // why do we add this
@@ -221,7 +226,7 @@ class LoginPageFragment : Fragment() ,OnBackPressed{
     }
 
     override fun OnBackPressed() {
-            activity!!.finish()
+        activity!!.finish()
     }
 }
 

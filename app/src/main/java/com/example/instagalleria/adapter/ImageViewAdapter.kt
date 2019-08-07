@@ -54,7 +54,7 @@ class ImageViewAdapter(var context: Context, var images_urls: ArrayList<UploadIm
                 bundle.putString("uri_image_value",uri_value)
                 bundle.putString("uri_image_fileName",fileName)
                 bundle.putString("uri_image_userName",userName)
-               // bundle.putInt("image_pos",pos)
+                bundle.putInt("uri_image_pos",pos)
 
                 photoDetailFragment.arguments = bundle
                 fragmentTransaction.add(R.id.fragment_container, photoDetailFragment,PHOTO_DETAIL_TAG )

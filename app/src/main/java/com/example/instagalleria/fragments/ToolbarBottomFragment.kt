@@ -11,8 +11,6 @@ import android.widget.ImageView
 import com.example.instagalleria.R
 import java.lang.Exception
 
-
-
 class ToolbarBottomFragment() : Fragment(), View.OnClickListener {
 
     var TOOLBAR_BOTTOM_BACKSTACK = "toolbar_bottom_backStack"
@@ -40,13 +38,11 @@ class ToolbarBottomFragment() : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-
         when (v!!.id) {
             R.id.leftSide -> toolbarLeftHomeCall()
             R.id.rightSide -> toolbarRightCameraCall()
         }
     }
-
 
     fun toolbarLeftHomeCall() {
         //home icon
@@ -54,7 +50,6 @@ class ToolbarBottomFragment() : Fragment(), View.OnClickListener {
             home()
         })
     }
-
 
     fun toolbarRightCameraCall() {
         //camera icon  on clicking the camera it should jump to camera fragment
@@ -71,7 +66,6 @@ class ToolbarBottomFragment() : Fragment(), View.OnClickListener {
             }
 
         }
-
 
         fragment.toolbar_title.setText("Photo Library")
         fragment.toolbar_back.visibility = View.GONE
@@ -99,13 +93,12 @@ class ToolbarBottomFragment() : Fragment(), View.OnClickListener {
             if( fragment !is ToolbarTopFragment && fragment !is ToolbarBottomFragment && fragment !is LoginPageFragment ) {
                 activity!!.supportFragmentManager.beginTransaction().remove(fragment).commit()
             }
-
         }
 
         fragment.toolbar_title.setText(getString(R.string.app_name))
+        fragment.toolbar_back.visibility=View.GONE
         toolbar_left.setImageResource(R.drawable.home_inactive_optimized)
         toolbar_right.setImageResource(R.drawable.icn_photo_active_optimized)
-
 
         try {
             var fragmentTransaction = activity!!.supportFragmentManager.beginTransaction()
@@ -129,10 +122,11 @@ class ToolbarBottomFragment() : Fragment(), View.OnClickListener {
         toolbar_left.setImageResource(R.drawable.home_inactive_optimized)
         fragment.toolbar_title.setText(R.string.app_name)
         fragment.toolbar_back.visibility = View.GONE
+        fragmentManager!!.popBackStack()
 
     }
 
-    fun photoDeatilSetting() {
+    fun photoDetailSetting() {
 
         fragment.toolbar_title.setText("Photo Detail")
         fragment.toolbar_back.visibility = View.VISIBLE
@@ -143,10 +137,9 @@ class ToolbarBottomFragment() : Fragment(), View.OnClickListener {
 
     fun backFromcameraFragtoPhotoDetail(){
         toolbar_right.setImageResource(R.drawable.icn_photo_active_optimized)
-        toolbar_left.setImageResource(R.drawable.home_active_optimized)
+        toolbar_left.setImageResource(R.drawable.home_inactive_optimized)
         fragment.toolbar_title.setText(R.string.app_name)
-        fragment.toolbar_back.visibility = View.VISIBLE
+        fragment.toolbar_back.visibility = View.GONE
 
     }
-
 }

@@ -40,8 +40,10 @@ class PhotoUploadFragment : Fragment() {
     private var photos_list: ArrayList<Uri>? = null
 
     private lateinit var uri_value: Uri
+    private lateinit var user: String
 
     var imageGallery = ImageGalleryViewFragment()
+    lateinit var loginPage: LoginPageFragment
     var hashMap: HashMap<String, String> = HashMap<String, String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -51,7 +53,15 @@ class PhotoUploadFragment : Fragment() {
         var bundle = arguments!!
         var str = bundle.getString("uri_string")
 
-        imageGallery = fragmentManager!!.fragments.get(3) as ImageGalleryViewFragment
+        var list = fragmentManager!!.fragments
+        Log.d("list of fragments", list.toString())
+        if (fragmentManager!!.fragments.get(3) is ImageGalleryViewFragment) {
+            imageGallery = fragmentManager!!.fragments.get(3) as ImageGalleryViewFragment
+            user = imageGallery.user_displayName
+        } else if (fragmentManager!!.fragments.get(2) is LoginPageFragment) {
+            loginPage = fragmentManager!!.fragments.get(2) as LoginPageFragment
+            user = loginPage.registered_display_name
+        }
 
         gridView = view.findViewById(R.id.gridView_pl)
         upload_button = view.findViewById(R.id.uploadMultiple)
@@ -84,15 +94,11 @@ class PhotoUploadFragment : Fragment() {
             } else {
                 upload(uri_value)
             }
+            //    fragmentManager!!.popBackStack("toolbar_bottom_backStack", FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
-            val activity = activity as MainActivity
-
-            activity.fragment_toolbar_bottom.backandOnFromUpload()
-            fragmentManager!!.popBackStack("toolbar_bottom_backStack", FragmentManager.POP_BACK_STACK_INCLUSIVE)
         })
         return view;
     }
-
 
     //upload to firebase
     fun upload(filePathUri: Uri) {
@@ -108,7 +114,6 @@ class PhotoUploadFragment : Fragment() {
             //directly gets stored in the storage firebase with the name uploads.  so have the storageRef.child , so that the images get created inside the folder uploads
             // with the names that get assigned using UUID   A class that represents an immutable universally unique identifier (UUID). A UUID represents a 128-bit value.
 
-
             // firebase storage
             ref.putFile(filePathUri, metadata)
                 .addOnSuccessListener(OnSuccessListener<UploadTask.TaskSnapshot> { taskSnapshot ->
@@ -123,18 +128,32 @@ class PhotoUploadFragment : Fragment() {
                     while (!urlTask.isSuccessful());
                     var downloadUrl = urlTask.getResult();
 
-
-                    var user = imageGallery.user_displayName
                     hashMap.put("USER", user)
                     hashMap.put("NAME", name)
                     hashMap.put("URI", downloadUrl.toString())
 
-                    var uploadImage = UploadImage(name, downloadUrl.toString(), user)
-                    imageGallery.uploadList.add(uploadImage)
-                    imageGallery.refresh()
-
                     //upload to cloud db
                     dbStorage(name)
+
+                    var uploadImage = UploadImage(name, downloadUrl.toString(), user)
+
+                    if(imageGallery.uploadList.size !=0) {
+                        imageGallery.uploadList.add(uploadImage)
+                        imageGallery.adapter.notifyDataSetChanged()
+                    }else {
+                        var bundle = Bundle()
+                        bundle.putString("profile_user", user)
+                        imageGallery.uploadList.add(uploadImage)
+                        var fragmentTransaction = fragmentManager!!.beginTransaction()
+                        var imageGalleryViewFragment = ImageGalleryViewFragment()
+                        val activity = activity as MainActivity
+                        activity.fragment_toolbar_bottom.backandOnFromUpload()
+                        imageGalleryViewFragment.arguments = bundle
+                        fragmentTransaction.add(R.id.fragment_container, imageGalleryViewFragment)
+                        fragmentTransaction.commit()
+                    }
+
+
 
                 })
                 .addOnFailureListener(OnFailureListener { e ->
@@ -144,7 +163,6 @@ class PhotoUploadFragment : Fragment() {
                     )
                 })
         }
-
     }
 
     //upload to cloud db storage

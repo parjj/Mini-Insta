@@ -17,13 +17,13 @@ import com.example.instagalleria.R
 import com.example.instagalleria.adapter.ImageViewAdapter
 import com.example.instagalleria.model.Constants
 import com.example.instagalleria.model.Constants.Companion.TAG
+import com.example.instagalleria.model.OnBackPressed
 import com.example.instagalleria.model.UploadImage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
 
-class ImageGalleryViewFragment : Fragment() {
-
+class ImageGalleryViewFragment : Fragment(), OnBackPressed {
 
     private lateinit var recyclerView: RecyclerView
     lateinit var user_displayName: String
@@ -50,10 +50,7 @@ class ImageGalleryViewFragment : Fragment() {
         adapter = ImageViewAdapter(context!!, uploadList)
         recyclerView.adapter = adapter
 
-
-
         val activity = activity as MainActivity
-
         activity.fragment_toolbar_top.view?.visibility = View.VISIBLE
         activity.fragment_toolbar_bottom.view?.visibility = View.VISIBLE
 
@@ -93,9 +90,19 @@ class ImageGalleryViewFragment : Fragment() {
         Log.d(TAG, "getAllDocumentsFromDB....Ended");
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        refresh()
+    }
+
     fun refresh() {
         if (adapter != null) {
             adapter.notifyDataSetChanged()
         }
+    }
+
+   override fun OnBackPressed() {
+       this.activity!!.finish()
     }
 }

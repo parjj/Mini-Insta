@@ -29,10 +29,6 @@ import android.support.v4.content.ContextCompat.getSystemService
 import android.view.inputmethod.InputMethodManager
 import android.support.v4.content.ContextCompat.getSystemService
 
-
-
-
-
 class PhotoDetailFragment : Fragment(), View.OnClickListener, OnBackPressed {
 
     lateinit var imageView: ImageView
@@ -60,7 +56,7 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener, OnBackPressed {
 
     var likes_count = 0L
     var liked_user_name: String? = null
-    var comm_from_db : String?= null
+    var comm_from_db: String? = null
     var userNameCheck = "false"
     lateinit var currentUserNameCheck: String
 
@@ -69,12 +65,13 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener, OnBackPressed {
     private lateinit var imageUserName: String
     private lateinit var currentUser: String
     private lateinit var comments_str: String
+    var image_position: Int = 0
     private var commentsList = ArrayList<String>()
     private var usersList = ArrayList<String>()
     private var no_of_likes = ArrayList<Long>()
     var hashMap: HashMap<String, String> = HashMap<String, String>()
     var hashMap_forHearts: HashMap<String, String> = HashMap<String, String>()
-    private lateinit var mainActivity:MainActivity
+    private lateinit var mainActivity: MainActivity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -83,18 +80,25 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener, OnBackPressed {
         uriString = bundle!!.getString("uri_image_value")  // comming from image view adapter
         imageFileName = bundle!!.getString("uri_image_fileName")  // comming from image view adapter
         imageUserName = bundle!!.getString("uri_image_userName")  // comming from image view adapter
+        image_position = bundle!!.getInt("uri_image_pos")  // comming from image view adapter
 
-        imageGallery = fragmentManager!!.fragments.get(3) as ImageGalleryViewFragment
+        var list = fragmentManager!!.fragments
+        Log.d("list of fragments", list.toString())
+
+        for (fragment in fragmentManager!!.getFragments()) {
+            if(fragment is ImageGalleryViewFragment){
+                imageGallery= fragment as ImageGalleryViewFragment
+            }
+        }
 
         settings_linearLL = view.findViewById(R.id.settings_layout)
         deleteB = view.findViewById(R.id.delete_id)
         cancelB = view.findViewById(R.id.cancel_id)
 
-
         currentUser = imageGallery.user_displayName
 
         mainActivity = activity as MainActivity
-        mainActivity.fragment_toolbar_bottom.photoDeatilSetting()
+        mainActivity.fragment_toolbar_bottom.photoDetailSetting()
 
         // load all the comments for the image from DB
         fetchCommentsFromDB()
@@ -117,13 +121,11 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener, OnBackPressed {
         post_button = viewL.findViewById(R.id.post_btn)
         commentsnts_linearLL = viewL.findViewById(R.id.commentsLinear)
 
-
         // recycler view
         //        var linearLayoutManager = LinearLayoutManager(this.context,LinearLayoutManager.VERTICAL,false)
         //        recyclerView.layoutManager = linearLayoutManager
         //        adapter = PhotoCommentsAdapter(commentsDataList)
         //        recyclerView.adapter = adapter
-
 
         listView.addHeaderView(viewL)
         list_adapter = CommentsSectionAdapter(context!!, commentsDataList)
@@ -301,9 +303,8 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener, OnBackPressed {
 
         //post button click
         post_button.setOnClickListener(View.OnClickListener { v ->
-
-                    val ipmm = this.activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-        ipmm!!.hideSoftInputFromWindow(post_comment.getWindowToken(), 0)
+            val ipmm = this.activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+            ipmm!!.hideSoftInputFromWindow(post_comment.getWindowToken(), 0)
 
 
             comments_str = post_comment.text.toString()
@@ -333,12 +334,12 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener, OnBackPressed {
     //delete function
     fun settings() {
 
-        settings_linearLL.visibility=View.VISIBLE
+        settings_linearLL.visibility = View.VISIBLE
 
         //delete button click
         deleteB.setOnClickListener(View.OnClickListener { l ->
 
-             Constants.storageRef.child(imageFileName).delete()
+            Constants.storageRef.child(imageFileName).delete()
             //commentsDataList.remove(CommentsData(imageUserName, comm_from_db))
             list_adapter.notifyDataSetChanged()
             //  commentsDataList.removeAt(position)
@@ -349,8 +350,13 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener, OnBackPressed {
                         var profile_user = nameString.get("USER")
                         if (profile_user != null) {
                             if (profile_user.equals(currentUser)) {
+
+                                document.reference.collection("comments").document().delete()
+                                document.reference.collection("likes").document().delete()
                                 document.reference.delete()
-                                imageGallery.uploadList.remove(UploadImage(imageFileName, uriString, imageUserName))
+                                //commentsDataList.remove(commentsDataList[position])
+                                imageGallery.uploadList.removeAt(image_position)
+                                // imageGallery.uploadList.remove(UploadImage(imageFileName, uriString, imageUserName))
                                 imageGallery.adapter.notifyDataSetChanged()
 
                                 fragmentManager!!.popBackStack()
@@ -361,14 +367,14 @@ class PhotoDetailFragment : Fragment(), View.OnClickListener, OnBackPressed {
                         }
                     }
                 }
-            settings_linearLL.visibility=View.GONE
+            settings_linearLL.visibility = View.GONE
 
         })
 
         // cancel  button click
         cancelB.setOnClickListener(View.OnClickListener
-        { v -> this.activity!!.finish()
-            settings_linearLL.visibility=View.GONE
+        { v ->
+            settings_linearLL.visibility = View.GONE
         })
 
     }
